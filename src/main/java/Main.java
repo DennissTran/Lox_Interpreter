@@ -49,6 +49,12 @@ public class Main {
         dictionary.put("==", "EQUAL_EQUAL == null");
         dictionary.put("!", "BANG ! null");
         dictionary.put("!=", "BANG_EQUAL != null");
+        dictionary.put(">", "GREATER > null");
+        dictionary.put("<", "LESS < null");
+        dictionary.put("<=", "LESS_EQUAL <= null");
+        dictionary.put(">=", "GREATER_EQUAL >= null");
+
+        Set <String> relationalOperators = Set.of("<", "=", ">", "!");
 
         List <String> input = new ArrayList <>();
         for (char c : fileContents.toCharArray()) {
@@ -56,7 +62,7 @@ public class Main {
                 if (input.size() == 0) {
                     input.add(c + "");
                 } else {
-                    if (input.get(input.size() - 1).equals("=") || input.get(input.size() - 1).equals("!")) {
+                    if (relationalOperators.contains(c + "")) {
                         input.set(input.size() - 1, input.get(input.size() - 1) + "=");
                     } else {
                         input.add(c + "");
