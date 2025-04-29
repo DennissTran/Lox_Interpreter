@@ -54,8 +54,7 @@ public class Main {
                 if (input.size() == 0 || !input.get(input.size() - 1).equals("/")) {
                     input.add(c + "");
                 } else {
-                    input.remove(input.size() - 1);
-                    break;
+                    input.set(input.size() - 1, input.get(input.size() - 1) + "/");
                 }
             } else {
                 input.add(c + "");
@@ -87,6 +86,7 @@ public class Main {
                 continue;
             }
 
+            if (x.equals("//")) break;
             if (spaceOperators.contains(x)) continue;
 
             if (dictionary.containsKey(x)) {
