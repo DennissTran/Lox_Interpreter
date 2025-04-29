@@ -299,7 +299,10 @@ public class Main {
             return;
         }
 
-        else Print("" + Double.parseDouble(words[0]));
+        else {
+            words[0] = words[0].substring(1, words[0].length() - 1);
+            Print(words[0]);
+        }
         //else Print("(" + words[1] + " " + Double.parseDouble(words[0]) + " " + Double.parseDouble(words[2]) + ")");
     }
 
