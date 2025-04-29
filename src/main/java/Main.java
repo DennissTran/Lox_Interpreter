@@ -80,6 +80,7 @@ public class Main {
                 if (isNumber == 1) {
                     isNumber = 0;
                     Print("NUMBER " + currentNumber + " " + Double.parseDouble(currentNumber));
+                    currentNumber = "";
                 }
                 isString ^= 1;
 
@@ -109,6 +110,7 @@ public class Main {
             if (isNumber == 1) {
                 isNumber = 0;
                 Print("NUMBER " + currentNumber + " " + Double.parseDouble(currentNumber));
+                currentNumber = "";
             }
             if (x.equals("//")) break;
             if (spaceOperators.contains(x)) continue;
