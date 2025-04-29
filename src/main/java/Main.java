@@ -8,6 +8,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        //args = new String[] {"tokenize", "Contents.txt"};
+
         if (args.length < 2) {
             System.err.println("Usage: ./your_program.sh tokenize <filename>");
             System.exit(1);
@@ -32,15 +34,14 @@ public class Main {
 
         if (fileContents.length() > 0) {
             for (char c : fileContents.toCharArray()) {
-                if (c == '(') { 
-                    Print("LEFT_PAREN ( null");
-                } else if (c == ')') {
-                    Print("RIGHT_PAREN ) null");
-                } else if (c == '{') {
-                    Print("LEFT_BRACE { null");
-                } else if (c == '}') {
-                    Print("RIGHT_BRACE } null");
-                }
+                if (c == '(') Print("LEFT_PAREN ( null");
+                else if (c == ')') Print("RIGHT_PAREN ) null");
+                else if (c == '{') Print("LEFT_BRACE { null");
+                else if (c == '}') Print("RIGHT_BRACE } null");
+                else if (c == '*') Print("STAR * null");
+                else if (c == '.') Print("DOT . null");
+                else if (c == ',') Print("COMMA , null");
+                else if (c == '+') Print("PLUS + null");
             }
 
             System.out.println("EOF  null");
