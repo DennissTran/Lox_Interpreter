@@ -9,7 +9,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        //args = new String[] {"tokenize", "Contents.txt"};
+        args = new String[] {"tokenize", "test.lox"};
 
         if (args.length < 2) {
             System.err.println("Usage: ./your_program.sh tokenize <filename>");
@@ -31,7 +31,6 @@ public class Main {
             System.err.println("Error reading file: " + e.getMessage());
             System.exit(1);
         }
-
         int errors = 0;
 
         HashMap <String, String> dictionary = new HashMap <> ();
@@ -59,6 +58,7 @@ public class Main {
 
         List <String> input = new ArrayList <>();
         for (char c : fileContents.toCharArray()) {
+            if (c == ' ' || c == '\n' || c == '\r' || c == '\t') continue;
             if (c == '=') {
                 if (input.size() == 0) {
                     input.add(c + "");
