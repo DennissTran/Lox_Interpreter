@@ -114,6 +114,15 @@ public class Main {
                 continue;
             }
 
+            if (dictionary.containsKey(x)) {
+                if (identifier.length() > 0) {
+                    Print("IDENTIFIER " + identifier + " null");
+                    identifier = "";
+                }
+                Print(dictionary.get(x));
+                continue;
+            } 
+
             if (identifier.length() > 0) {
                 identifier = identifier + x;
                 continue;
@@ -138,18 +147,10 @@ public class Main {
                 isNumber = 0;
                 Print("NUMBER " + currentNumber + " " + Double.parseDouble(currentNumber));
                 currentNumber = "";
+                continue;
             }
             if (x.equals("//")) break;
-
-            if (dictionary.containsKey(x)) {
-                if (identifier.length() > 0) {
-                    Print("IDENTIFIER " + identifier + " null");
-                    identifier = "";
-                }
-                Print(dictionary.get(x));
-            } else {
-                identifier = identifier + x;
-            }
+            identifier = identifier + x;
         }
 
         if (isString == 1) {
