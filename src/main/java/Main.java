@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.*;
 
 public class Main {
     public static void Print(String msg) {
@@ -33,29 +34,43 @@ public class Main {
 
         int errors = 0;
 
-        if (fileContents.length() > 0) {
-            for (char c : fileContents.toCharArray()) {
-                if (c == '(') Print("LEFT_PAREN ( null");
-                else if (c == ')') Print("RIGHT_PAREN ) null");
-                else if (c == '{') Print("LEFT_BRACE { null");
-                else if (c == '}') Print("RIGHT_BRACE } null");
-                else if (c == '*') Print("STAR * null");
-                else if (c == '.') Print("DOT . null");
-                else if (c == ',') Print("COMMA , null");
-                else if (c == '+') Print("PLUS + null");
-                else if (c == '-') Print("MINUS - null");
-                else if (c == ';') Print("SEMICOLON ; null");
-                else {
-                    System.err.println("[line 1] Error: Unexpected character: " + c);
-                    errors = 65;
-                }
-            }
+        HashMap <String, String> dictionary = new HashMap <> ();
+        dictionary.put("(", "LEFT_PAREN ( null");
+        dictionary.put(")", "RIGHT_PAREN ) null");
+        dictionary.put("{", "LEFT_BRACE { null");
+        dictionary.put("}", "RIGHT_BRACE } null");
+        dictionary.put("*", "STAR * null");
+        dictionary.put(".", "DOT . null");
+        dictionary.put(",", "COMMA , null");
+        dictionary.put("+", "PLUS + null");
+        dictionary.put("-", "MINUS - null");
+        dictionary.put(";", "SEMICOLON ; null");
+        dictionary.put("=", "EQUAL = null");
+        dictionary.put("==", "EQUAL_EQUAL == null");
 
-            System.out.println("EOF  null");
-        } else {
-            System.out.println("EOF  null"); // Placeholder, remove this line when implementing the scanner
+        List <String> input = new ArrayList <>();
+        for (char c : fileContents.toCharArray()) {
+            if (c == '=') {
+                if (input.size() == 0) {
+                    input.add(c + "");
+                } else {
+                    if (input.get(input.size() - 1).equals("=")) {
+                        input.set(input.size() - 1, input.get(input.size() - 1) + "=");
+                    } else {
+                        input.add(c + "");
+                    }
+                }
+            } else if (dictionary.containsKey(c + "")){
+                input.add(c + "");
+            } else {
+                System.err.println("[line 1] Error: Unexpected character: " + c);
+                errors = 65;
+            }
         }
 
+        for (String x : input) Print(dictionary.get(x));
+
+        System.out.println("EOF  null");
         System.exit(errors);
     }
 }
