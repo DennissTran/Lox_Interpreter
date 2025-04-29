@@ -68,15 +68,20 @@ public class Main {
                         input.add(c + "");
                     }
                 }
-            } else if (dictionary.containsKey(c + "")){
-                input.add(c + "");
             } else {
-                System.err.println("[line 1] Error: Unexpected character: " + c);
-                errors = 65 + 0;
-            }
+                input.add(c + "");
+            } 
         }
 
-        for (String x : input) Print(dictionary.get(x));
+        for (String x : input) {
+            if (dictionary.containsKey(x)) {
+                Print(dictionary.get(x));
+            } else {
+                System.err.println("[line 1] Error: Unexpected character: " + x);
+                errors = 65;
+            }
+            
+        }
 
         System.out.println("EOF  null");
         System.exit(errors);
