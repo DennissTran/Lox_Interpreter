@@ -11,7 +11,7 @@ public class Main {
     static Set <String> spaceOperators = Set.of("\t", " ");
     static HashMap <String, String> dictionary = new HashMap <> ();
     static Set <String> digits = Set.of("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
-
+    static HashMap<String, String> keywords;
     static void sieve() {
         dictionary.put("(", "LEFT_PAREN ( null");
         dictionary.put(")", "RIGHT_PAREN ) null");
@@ -32,6 +32,25 @@ public class Main {
         dictionary.put("<=", "LESS_EQUAL <= null");
         dictionary.put(">=", "GREATER_EQUAL >= null");
         dictionary.put("/", "SLASH / null");
+
+
+        keywords = new HashMap<>();
+        keywords.put("and",    "AND");
+        keywords.put("class",  "CLASS");
+        keywords.put("else",   "ELSE");
+        keywords.put("false",  "FALSE");
+        keywords.put("for",    "FOR");
+        keywords.put("fun",    "FUN");
+        keywords.put("if",     "IF");
+        keywords.put("nil",    "NIL");
+        keywords.put("or",     "OR");
+        keywords.put("print",  "PRINT");
+        keywords.put("return", "RETURN");
+        keywords.put("super",  "SUPER");
+        keywords.put("this",   "THIS");
+        keywords.put("true",   "TRUE");
+        keywords.put("var",    "VAR");
+        keywords.put("while",  "WHILE");
     }
 
     static void Print(String msg) {
@@ -71,13 +90,35 @@ public class Main {
         return false;
     }
 
+    static String printNumber(String currentNumber) {
+        if (currentNumber.length() > 0) {
+            Print("NUMBER " + currentNumber + " " + Double.parseDouble(currentNumber));
+            currentNumber = "";
+        }
+        return currentNumber;
+    }
+
+    static String printIdentifier(String identifier) {
+        if (identifier.length() > 0) {
+            if (keywords.containsKey(identifier)) {
+                Print(keywords.get(identifier) + " " + identifier + " null");
+            } 
+
+            else {
+                Print("IDENTIFIER " + identifier + " null");
+            }
+
+            identifier = "";
+        }
+        return identifier;
+    }
+
     static int readLine(String fileContents, int nline) {
         List <String> input = parseInput(fileContents);
         input.add(" ");
 
         int errors = 0;
         int isString = 0;
-        int isNumber = 0;
         String currentString = "";
         String currentNumber = "";
         String identifier = "";
@@ -86,24 +127,12 @@ public class Main {
         for (String x : input) {
             ++id;
             if (x.equals("\"")) {
-                if (isNumber == 1) {
-                    if (identifier.length() > 0) {
-                        if (!isIdetifier(identifier.charAt(0))) errors = 65;
-                        Print("IDENTIFIER " + identifier + " null");
-                        identifier = "";
-                    }
-                    isNumber = 0;
-                    Print("NUMBER " + currentNumber + " " + Double.parseDouble(currentNumber));
-                    currentNumber = "";
-                }
-                isString ^= 1;
+                identifier = printIdentifier(identifier);
+                currentNumber = printNumber(currentNumber);
 
+                isString ^= 1;
                 if (isString == 0) {
-                    if (identifier.length() > 0) {
-                        if (!isIdetifier(identifier.charAt(0))) errors = 65;
-                        Print("IDENTIFIER " + identifier + " null");
-                        identifier = "";
-                    }
+                    identifier = printIdentifier(identifier);
                     Print("STRING \"" + currentString + "\" " + currentString);
                     currentString = "";
                 }
@@ -116,37 +145,20 @@ public class Main {
             }
 
             if (spaceOperators.contains(x)) {
-                if (identifier.length() > 0) {
-                    if (!isIdetifier(identifier.charAt(0))) errors = 65;
-                    Print("IDENTIFIER " + identifier + " null");
-                    identifier = "";
-                }
-
-                if (isNumber == 1) {
-                    isNumber = 0;
-                    Print("NUMBER " + currentNumber + " " + Double.parseDouble(currentNumber));
-                    currentNumber = "";
-                }
+                identifier = printIdentifier(identifier);
+                currentNumber = printNumber(currentNumber);
                 continue;
             }
 
-            if (isNumber == 1 && x.equals(".") && id < input.size() - 1 && digits.contains(input.get(id + 1))) {
+            if (currentNumber.length() > 0 && x.equals(".") && id < input.size() - 1 && digits.contains(input.get(id + 1))) {
                 currentNumber = currentNumber + x;
                 continue;
             }
 
             if (dictionary.containsKey(x)) {
-                if (identifier.length() > 0) {
-                    if (!isIdetifier(identifier.charAt(0))) errors = 65;
-                    Print("IDENTIFIER " + identifier + " null");
-                    identifier = "";
-                }
+                identifier = printIdentifier(identifier);
+                currentNumber = printNumber(currentNumber);
 
-                if (isNumber == 1) {
-                    isNumber = 0;
-                    Print("NUMBER " + currentNumber + " " + Double.parseDouble(currentNumber));
-                    currentNumber = "";
-                }
                 Print(dictionary.get(x));
                 continue;
             } 
@@ -157,37 +169,26 @@ public class Main {
             }
 
             if (digits.contains(x)) {
-                isNumber = 1;
                 currentNumber = currentNumber + x;
                 continue;
             }
 
             if (x.equals("//")) break;
             
-            if (isNumber == 1) {
-                isNumber = 0;
-                Print("NUMBER " + currentNumber + " " + Double.parseDouble(currentNumber));
-                currentNumber = "";
-            }
+            currentNumber = printNumber(currentNumber);
+
             if (isIdetifier(x.charAt(0))) {
                 identifier = identifier + x;
             } else {
                 System.err.println("[line " + nline + "] Error: Unexpected character: " + x);
                 errors = 65;
-            }
-            
+            } 
         }
 
         if (isString == 1) {
             System.err.println("[line " + nline + "] Error: Unterminated string.");
             errors = 65;
         }
-
-        if (isNumber == 1) {
-            isNumber = 0;
-            Print("NUMBER " + currentNumber + " " + Double.parseDouble(currentNumber));
-        }
-        //Print(errors + "");
         return errors;
     }
 
