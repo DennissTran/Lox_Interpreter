@@ -47,6 +47,8 @@ public class Main {
         dictionary.put(";", "SEMICOLON ; null");
         dictionary.put("=", "EQUAL = null");
         dictionary.put("==", "EQUAL_EQUAL == null");
+        dictionary.put("!", "BANG ! null");
+        dictionary.put("!=", "BANG_EQUAL != null");
 
         List <String> input = new ArrayList <>();
         for (char c : fileContents.toCharArray()) {
@@ -54,7 +56,7 @@ public class Main {
                 if (input.size() == 0) {
                     input.add(c + "");
                 } else {
-                    if (input.get(input.size() - 1).equals("=")) {
+                    if (input.get(input.size() - 1).equals("=") || input.get(input.size() - 1).equals("!")) {
                         input.set(input.size() - 1, input.get(input.size() - 1) + "=");
                     } else {
                         input.add(c + "");
