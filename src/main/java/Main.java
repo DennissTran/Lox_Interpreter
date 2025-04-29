@@ -132,7 +132,6 @@ public class Main {
 
                 isString ^= 1;
                 if (isString == 0) {
-                    identifier = printIdentifier(identifier);
                     Print("STRING \"" + currentString + "\" " + currentString);
                     currentString = "";
                 }
@@ -192,6 +191,11 @@ public class Main {
         return errors;
     }
 
+    static void parseLine(String fileContents) {
+        String [] words = fileContents.split(" ");
+        Print("(" + words[1] + " " + Double.parseDouble(words[0]) + " " + Double.parseDouble(words[2]) + ")");
+    }
+
     public static void main(String[] args) {
         sieve();
         //args = new String[] {"tokenize", "test.lox"};
@@ -204,10 +208,10 @@ public class Main {
         String command = args[0];
         String filename = args[1];
 
-        if (!command.equals("tokenize")) {
+        /*if (!command.equals("tokenize")) {
             System.err.println("Unknown command: " + command);
             System.exit(1);
-        }
+        }*/
 
         String fileContents = "";
         try {
@@ -220,13 +224,21 @@ public class Main {
         // --------------------------- START OF INTERPRETER --------------------------
 
         String [] lines = fileContents.split("\\R");
-        int errors = 0;
-        
-        for (int i = 0; i < lines.length; i++) {
-            errors = readLine(lines[i], i + 1);
-        }
 
-        System.out.println("EOF  null");
-        System.exit(errors);
+        if (command.equals("tokenize")) {
+            int errors = 0;
+        
+            for (int i = 0; i < lines.length; i++) {
+                errors = readLine(lines[i], i + 1);
+            }
+
+            System.out.println("EOF  null");
+            System.exit(errors);
+        } else if (command.equals("parse")) {
+            for (int i = 0; i < lines.length; i++) {
+                parseLine(lines[i]);
+            }
+        }
+        
     }
 }
