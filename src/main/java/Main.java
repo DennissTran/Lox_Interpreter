@@ -8,7 +8,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        args = new String[] {"tokenize", "Contents.txt"};
+        //args = new String[] {"tokenize", "Contents.txt"};
 
         if (args.length < 2) {
             System.err.println("Usage: ./your_program.sh tokenize <filename>");
