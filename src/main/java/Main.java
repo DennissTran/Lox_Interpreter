@@ -10,6 +10,7 @@ public class Main {
     static Set <String> relationalOperators = Set.of("<", "=", ">", "!");
     static Set <String> spaceOperators = Set.of("\t", " ");
     static HashMap <String, String> dictionary = new HashMap <> ();
+    static Set <String> digits = Set.of("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
 
     static void sieve() {
         dictionary.put("(", "LEFT_PAREN ( null");
@@ -63,15 +64,28 @@ public class Main {
         return input;
     }
 
+    static String formatNumber(String Number) {
+        if (Number.contains(".")) return Number;
+        return Number + ".0";
+    }
+
     static int readLine(String fileContents, int nline) {
         List <String> input = parseInput(fileContents);
 
         int errors = 0;
         int isString = 0;
+        int isNumber = 0;
         String currentString = "";
+        String currentNumber = "";
 
+        int id = -1;
         for (String x : input) {
+            ++id;
             if (x.equals("\"")) {
+                if (isNumber == 1) {
+                    isNumber = 0;
+                    Print("NUMBER " + currentNumber + " " + formatNumber(currentNumber));
+                }
                 isString ^= 1;
 
                 if (isString == 0) {
@@ -86,6 +100,22 @@ public class Main {
                 continue;
             }
 
+            if (digits.contains(x)) {
+                isNumber = 1;
+                currentNumber = currentNumber + x;
+                continue;
+            }
+
+            if (isNumber == 1 && x.equals(".") && id < input.size() - 1 && digits.contains(input.get(id))) {
+                Print(id + "");
+                currentNumber = currentNumber + x;
+                continue;
+            }
+
+            if (isNumber == 1) {
+                isNumber = 0;
+                Print("NUMBER " + currentNumber + " " + formatNumber(currentNumber));
+            }
             if (x.equals("//")) break;
             if (spaceOperators.contains(x)) continue;
 
@@ -95,13 +125,18 @@ public class Main {
                 System.err.println("[line " + nline + "] Error: Unexpected character: " + x);
                 errors = 65;
             }
-            
         }
 
         if (isString == 1) {
             System.err.println("[line " + nline + "] Error: Unterminated string.");
             errors = 65;
         }
+
+        if (isNumber == 1) {
+            isNumber = 0;
+            Print("NUMBER " + currentNumber + " " + formatNumber(currentNumber));
+        }
+
         return errors;
     }
 
