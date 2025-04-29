@@ -81,6 +81,7 @@ public class Main {
             if (x.equals("\"")) {
                 if (isNumber == 1) {
                     if (identifier.length() > 0) {
+                        errors = 65;
                         Print("IDENTIFIER " + identifier + " null");
                         identifier = "";
                     }
@@ -92,6 +93,7 @@ public class Main {
 
                 if (isString == 0) {
                     if (identifier.length() > 0) {
+                        errors = 65;
                         Print("IDENTIFIER " + identifier + " null");
                         identifier = "";
                     }
@@ -108,6 +110,7 @@ public class Main {
 
             if (spaceOperators.contains(x)) {
                 if (identifier.length() > 0) {
+                    errors = 65;
                     Print("IDENTIFIER " + identifier + " null");
                     identifier = "";
                 }
@@ -127,6 +130,7 @@ public class Main {
 
             if (dictionary.containsKey(x)) {
                 if (identifier.length() > 0) {
+                    errors = 65;
                     Print("IDENTIFIER " + identifier + " null");
                     identifier = "";
                 }
@@ -141,6 +145,7 @@ public class Main {
             } 
 
             if (identifier.length() > 0) {
+                errors = 65;
                 identifier = identifier + x;
                 continue;
             }
