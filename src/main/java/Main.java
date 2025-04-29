@@ -309,6 +309,8 @@ public class Main {
         else if (words.get(0).charAt(0) == '\"') {
             words.set(0, words.get(0).substring(1, words.get(0).length() - 1));
             Print(words.get(0));
+        } else if (words.get(0).charAt(0) == '(') {
+            Print("(group " + words.get(0).substring(2, words.get(0).length() - 2) + ")");
         } else {
             Print("" + Double.parseDouble(words.get(0)));
         }
