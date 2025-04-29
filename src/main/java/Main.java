@@ -293,9 +293,14 @@ public class Main {
     }
 
     static String Paren(String words) {
+        if (keywords.containsKey(words)) return words;
         if (words.charAt(0) == '(') return "(group " + Paren(words.substring(1, words.length() - 1)) + ")";
         if (words.charAt(0) == '\"') return Paren(words.substring(1, words.length() - 1));
-        return words;
+        if (words.charAt(0) == '!' || words.charAt(0) == '-') {
+            return "(" + words.charAt(0) + Paren(words.substring(1, words.length())) + ")";
+        }
+
+        return Double.parseDouble(words) + "";
     }
 
     static void parseLine(String fileContents) {
@@ -306,18 +311,7 @@ public class Main {
             words.add(matcher.group());
         }
 
-        if (keywords.containsKey(words.get(0))) {
-            Print(words.get(0));
-            return;
-        }
-        if (words.get(0).charAt(0) == '!') {
-            Print("(! " + words.get(0).substring(1, words.get(0).length()) + ")");
-        }
-        else if (words.get(0).charAt(0) == '\"' || words.get(0).charAt(0) == '(') {
-            Print(Paren(words.get(0)));
-        } else {
-            Print("" + Double.parseDouble(words.get(0)));
-        }
+        Print(Paren(words.get(0)));
     }
 
     public static void main(String[] args) {
