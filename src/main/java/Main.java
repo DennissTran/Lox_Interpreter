@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.regex.*;
 
 public class Main {
     static Set <String> relationalOperators = Set.of("<", "=", ">", "!");
@@ -293,15 +294,21 @@ public class Main {
 
 
     static void parseLine(String fileContents) {
-        String [] words = fileContents.split(" ");
-        if (keywords.containsKey(words[0])) {
-            Print(words[0]);
+        List<String> words = new ArrayList<>();
+        Pattern pattern = Pattern.compile("\"[^\"]*\"|\\S+");  
+        Matcher matcher = pattern.matcher(fileContents);
+        while (matcher.find()) {
+            words.add(matcher.group());
+        }
+
+        if (keywords.containsKey(words.get(0))) {
+            Print(words.get(0));
             return;
         }
 
         else {
-            words[0] = words[0].substring(1, words[0].length() - 1);
-            Print(words[0]);
+            words.set(0, words.get(0).substring(1, words.get(0).length() - 1));
+            Print(words.get(0));
         }
         //else Print("(" + words[1] + " " + Double.parseDouble(words[0]) + " " + Double.parseDouble(words[2]) + ")");
     }
