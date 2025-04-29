@@ -8,7 +8,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        //args = new String[] {"tokenize", "Contents.txt"};
+        args = new String[] {"tokenize", "Contents.txt"};
 
         if (args.length < 2) {
             System.err.println("Usage: ./your_program.sh tokenize <filename>");
@@ -44,7 +44,10 @@ public class Main {
                 else if (c == '+') Print("PLUS + null");
                 else if (c == '-') Print("MINUS - null");
                 else if (c == ';') Print("SEMICOLON ; null");
-                else System.err.println("[line 1] Error: Unexpected character: " + c);
+                else {
+                    System.err.println("[line 1] Error: Unexpected character: " + c);
+                    System.exit(65);
+                }
             }
 
             System.out.println("EOF  null");
