@@ -53,6 +53,7 @@ public class Main {
         dictionary.put("<", "LESS < null");
         dictionary.put("<=", "LESS_EQUAL <= null");
         dictionary.put(">=", "GREATER_EQUAL >= null");
+        dictionary.put("/", "SLASH / null");
 
         Set <String> relationalOperators = Set.of("<", "=", ">", "!");
 
@@ -67,6 +68,13 @@ public class Main {
                     } else {
                         input.add(c + "");
                     }
+                }
+            } else if (c == '/') {
+                if (input.size() == 0 || !input.get(input.size() - 1).equals("/")) {
+                    input.add(c + "");
+                } else {
+                    input.remove(input.size() - 1);
+                    break;
                 }
             } else {
                 input.add(c + "");
