@@ -293,8 +293,9 @@ public class Main {
     }
 
     static String Paren(String words) {
-        if (words.charAt(0) != '(') return words;
-        return "(group " + Paren(words.substring(1, words.length() - 1)) + ")";
+        if (words.charAt(0) == '(') return "(group " + Paren(words.substring(1, words.length() - 1)) + ")";
+        if (words.charAt(0) == '\"') return Paren(words.substring(1, words.length() - 1));
+        return words;
     }
 
     static void parseLine(String fileContents) {
@@ -310,10 +311,7 @@ public class Main {
             return;
         }
 
-        else if (words.get(0).charAt(0) == '\"') {
-            words.set(0, words.get(0).substring(1, words.get(0).length() - 1));
-            Print(words.get(0));
-        } else if (words.get(0).charAt(0) == '(') {
+        else if (words.get(0).charAt(0) == '\"' || words.get(0).charAt(0) == '(') {
             Print(Paren(words.get(0)));
         } else {
             Print("" + Double.parseDouble(words.get(0)));
