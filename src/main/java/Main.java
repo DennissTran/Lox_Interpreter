@@ -111,6 +111,12 @@ public class Main {
                     Print("IDENTIFIER " + identifier + " null");
                     identifier = "";
                 }
+
+                if (isNumber == 1) {
+                    isNumber = 0;
+                    Print("NUMBER " + currentNumber + " " + Double.parseDouble(currentNumber));
+                    currentNumber = "";
+                }
                 continue;
             }
 
@@ -118,6 +124,12 @@ public class Main {
                 if (identifier.length() > 0) {
                     Print("IDENTIFIER " + identifier + " null");
                     identifier = "";
+                }
+
+                if (isNumber == 1) {
+                    isNumber = 0;
+                    Print("NUMBER " + currentNumber + " " + Double.parseDouble(currentNumber));
+                    currentNumber = "";
                 }
                 Print(dictionary.get(x));
                 continue;
@@ -139,18 +151,13 @@ public class Main {
                 continue;
             }
 
+            if (x.equals("//")) break;
+            identifier = identifier + x;
             if (isNumber == 1) {
-                if (identifier.length() > 0) {
-                    Print("IDENTIFIER " + identifier + " null");
-                    identifier = "";
-                }
                 isNumber = 0;
                 Print("NUMBER " + currentNumber + " " + Double.parseDouble(currentNumber));
                 currentNumber = "";
-                continue;
             }
-            if (x.equals("//")) break;
-            identifier = identifier + x;
         }
 
         if (isString == 1) {
