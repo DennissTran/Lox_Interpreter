@@ -64,6 +64,13 @@ public class Main {
         return input;
     }
 
+    static boolean isIdetifier(char c) {
+        if (c == '_') return true;
+        if (c >= 'a' && c <= 'z') return true;
+        if (c >= 'A' && c <= 'Z') return true;
+        return false;
+    }
+
     static int readLine(String fileContents, int nline) {
         List <String> input = parseInput(fileContents);
         input.add(" ");
@@ -81,7 +88,7 @@ public class Main {
             if (x.equals("\"")) {
                 if (isNumber == 1) {
                     if (identifier.length() > 0) {
-                        errors = 65;
+                        if (!isIdetifier(identifier.charAt(0))) errors = 65;
                         Print("IDENTIFIER " + identifier + " null");
                         identifier = "";
                     }
@@ -93,7 +100,7 @@ public class Main {
 
                 if (isString == 0) {
                     if (identifier.length() > 0) {
-                        errors = 65;
+                        if (!isIdetifier(identifier.charAt(0))) errors = 65;
                         Print("IDENTIFIER " + identifier + " null");
                         identifier = "";
                     }
@@ -110,7 +117,7 @@ public class Main {
 
             if (spaceOperators.contains(x)) {
                 if (identifier.length() > 0) {
-                    errors = 65;
+                    if (!isIdetifier(identifier.charAt(0))) errors = 65;
                     Print("IDENTIFIER " + identifier + " null");
                     identifier = "";
                 }
@@ -130,7 +137,7 @@ public class Main {
 
             if (dictionary.containsKey(x)) {
                 if (identifier.length() > 0) {
-                    errors = 65;
+                    if (!isIdetifier(identifier.charAt(0))) errors = 65;
                     Print("IDENTIFIER " + identifier + " null");
                     identifier = "";
                 }
@@ -145,7 +152,7 @@ public class Main {
             } 
 
             if (identifier.length() > 0) {
-                errors = 65;
+                if (!isIdetifier(identifier.charAt(0))) errors = 65;
                 identifier = identifier + x;
                 continue;
             }
@@ -174,7 +181,7 @@ public class Main {
             isNumber = 0;
             Print("NUMBER " + currentNumber + " " + Double.parseDouble(currentNumber));
         }
-
+        //Print(errors + "");
         return errors;
     }
 
