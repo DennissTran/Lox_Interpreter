@@ -1,39 +1,17 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
 
 public class Main {
-    public static void Print(String msg) {
-        System.out.println(msg);
-    }
+    static Set <String> relationalOperators = Set.of("<", "=", ">", "!");
+    static Set <String> spaceOperators = Set.of("\t", " ");
+    static HashMap <String, String> dictionary = new HashMap <> ();
 
-    public static void main(String[] args) {
-        args = new String[] {"tokenize", "test.lox"};
-
-        if (args.length < 2) {
-            System.err.println("Usage: ./your_program.sh tokenize <filename>");
-            System.exit(1);
-        }
-
-        String command = args[0];
-        String filename = args[1];
-
-        if (!command.equals("tokenize")) {
-            System.err.println("Unknown command: " + command);
-            System.exit(1);
-        }
-
-        String fileContents = "";
-        try {
-            fileContents = Files.readString(Path.of(filename));
-        } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
-            System.exit(1);
-        }
-        int errors = 0;
-
-        HashMap <String, String> dictionary = new HashMap <> ();
+    public static void sieve() {
         dictionary.put("(", "LEFT_PAREN ( null");
         dictionary.put(")", "RIGHT_PAREN ) null");
         dictionary.put("{", "LEFT_BRACE { null");
@@ -53,9 +31,13 @@ public class Main {
         dictionary.put("<=", "LESS_EQUAL <= null");
         dictionary.put(">=", "GREATER_EQUAL >= null");
         dictionary.put("/", "SLASH / null");
+    }
 
-        Set <String> relationalOperators = Set.of("<", "=", ">", "!");
+    public static void Print(String msg) {
+        System.out.println(msg);
+    }
 
+    public static int readLine(String fileContents, int nline) {
         List <String> input = new ArrayList <>();
         for (char c : fileContents.toCharArray()) {
             if (c == '=') {
@@ -80,10 +62,8 @@ public class Main {
             } 
         }
 
-        Set <String> spaceOperators = Set.of("\t", "\n", "\r", " ");
-        int nline = 1;
+        int errors = 0;
         for (String x : input) {
-            if (x.equals("\n")) nline++;
             if (spaceOperators.contains(x)) continue;
             if (dictionary.containsKey(x)) {
                 Print(dictionary.get(x));
@@ -92,6 +72,42 @@ public class Main {
                 errors = 65;
             }
             
+        }
+        return errors;
+    }
+
+    public static void main(String[] args) {
+        sieve();
+        args = new String[] {"tokenize", "test.lox"};
+
+        if (args.length < 2) {
+            System.err.println("Usage: ./your_program.sh tokenize <filename>");
+            System.exit(1);
+        }
+
+        String command = args[0];
+        String filename = args[1];
+
+        if (!command.equals("tokenize")) {
+            System.err.println("Unknown command: " + command);
+            System.exit(1);
+        }
+
+        String fileContents = "";
+        try {
+            fileContents = Files.readString(Path.of(filename));
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+            System.exit(1);
+        }
+
+        // --------------------------- START OF INTERPRETER --------------------------
+
+        String [] lines = fileContents.split("\\R");
+        int errors = 0;
+        
+        for (int i = 0; i < lines.length; i++) {
+            errors = readLine(lines[i], i + 1);
         }
 
         System.out.println("EOF  null");
