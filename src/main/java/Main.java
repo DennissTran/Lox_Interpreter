@@ -192,17 +192,23 @@ public class Main {
         return errors;
     }
 
-    interface Expr {
+    static interface Expr {
         double evaluate();
+        void Traverse();
     }
 
-    class Literal implements Expr {
+    static class Literal implements Expr {
         double value;
         Literal(double value) { this.value = value; }
         public double evaluate() { return value; }
+
+        @Override
+        public void Traverse() {
+            System.out.print(value);
+        }
     }
 
-    class Binary implements Expr {
+    static class Binary implements Expr {
         Expr left;
         String op;
         Expr right;
@@ -222,11 +228,19 @@ public class Main {
                 default -> throw new RuntimeException("Unknown operator: " + op);
             };
         }
+
+        public void Traverse() {
+            System.out.print("(" + op + " ");
+            left.Traverse();
+            System.out.print(" ");
+            right.Traverse();
+            System.out.print(")");
+        }
     }
 
 
-    class Parser {
-    private final String input;
+    static class Parser {
+        private final String input;
         private int pos = 0;
 
         Parser(String input) {
@@ -285,7 +299,7 @@ public class Main {
 
         private Expr number() {
             int start = pos;
-            while (Character.isDigit(peek()) || peek() == '.') pos++;
+            while (Character.isDigit(peek()) || peek() == '.' || peek() == '-') pos++;
             if (start == pos) throw new RuntimeException("Expected number");
             double val = Double.parseDouble(input.substring(start, pos));
             return new Literal(val);
@@ -305,6 +319,11 @@ public class Main {
 
     static String Express(List <String> words) {
         if (words.size() == 1) return "" + Double.parseDouble(words.get(0));
+        if (words.get(0).charAt(0) == '\"') {
+            words.set(0, words.get(0).substring(1, words.get(0).length()));
+            String tmp = words.get(words.size() - 1).substring(0, words.get(words.size() - 1).length() - 1);
+            words.set(words.size() - 1, tmp);
+        }
         String lastNumber = Double.parseDouble(words.get(words.size() - 1)) + "";
         words.remove(words.size() - 1);
         String op = words.get(words.size() - 1);
@@ -319,7 +338,10 @@ public class Main {
         while (matcher.find()) {
             words.add(matcher.group());
         }
-        Print(Express(words));
+        Parser parser = new Parser(fileContents);
+        Expr expr = parser.parse();
+        expr.Traverse();
+        Print("");
         //Print(Paren(words.get(0)));
     }
 
