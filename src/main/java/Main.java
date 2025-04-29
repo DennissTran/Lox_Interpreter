@@ -295,12 +295,12 @@ public class Main {
     static String Paren(String words) {
         if (keywords.containsKey(words)) return words;
         if (words.charAt(0) == '(') return "(group " + Paren(words.substring(1, words.length() - 1)) + ")";
-        if (words.charAt(0) == '\"') return Paren(words.substring(1, words.length() - 1));
+        if (words.charAt(0) == '\"') return words.substring(1, words.length() - 1);
         if (words.charAt(0) == '!' || words.charAt(0) == '-') {
             return "(" + words.charAt(0) + " " + Paren(words.substring(1, words.length())) + ")";
         }
-
-        return Double.parseDouble(words) + "";
+        if (Character.isDigit(words.charAt(0))) return Double.parseDouble(words) + "";
+        return words;
     }
 
     static void parseLine(String fileContents) {
