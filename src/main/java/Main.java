@@ -64,11 +64,6 @@ public class Main {
         return input;
     }
 
-    static String formatNumber(String Number) {
-        if (Number.contains(".")) return Number;
-        return Number + ".0";
-    }
-
     static int readLine(String fileContents, int nline) {
         List <String> input = parseInput(fileContents);
 
@@ -84,7 +79,7 @@ public class Main {
             if (x.equals("\"")) {
                 if (isNumber == 1) {
                     isNumber = 0;
-                    Print("NUMBER " + currentNumber + " " + formatNumber(currentNumber));
+                    Print("NUMBER " + currentNumber + " " + Double.parseDouble(currentNumber));
                 }
                 isString ^= 1;
 
@@ -113,7 +108,7 @@ public class Main {
 
             if (isNumber == 1) {
                 isNumber = 0;
-                Print("NUMBER " + currentNumber + " " + formatNumber(currentNumber));
+                Print("NUMBER " + currentNumber + " " + Double.parseDouble(currentNumber));
             }
             if (x.equals("//")) break;
             if (spaceOperators.contains(x)) continue;
@@ -133,7 +128,7 @@ public class Main {
 
         if (isNumber == 1) {
             isNumber = 0;
-            Print("NUMBER " + currentNumber + " " + formatNumber(currentNumber));
+            Print("NUMBER " + currentNumber + " " + Double.parseDouble(currentNumber));
         }
 
         return errors;
