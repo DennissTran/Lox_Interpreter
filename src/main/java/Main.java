@@ -303,6 +303,15 @@ public class Main {
         return words;
     }
 
+    static String Express(List <String> words) {
+        if (words.size() == 1) return "" + Double.parseDouble(words.get(0));
+        String lastNumber = Double.parseDouble(words.get(words.size() - 1)) + "";
+        words.remove(words.size() - 1);
+        String op = words.get(words.size() - 1);
+        words.remove(words.size() - 1);
+        return "(" + op + " " + Express(words) + " " + lastNumber + ")";
+    }
+
     static void parseLine(String fileContents) {
         List<String> words = new ArrayList<>();
         Pattern pattern = Pattern.compile("\"[^\"]*\"|\\S+");  
@@ -310,8 +319,8 @@ public class Main {
         while (matcher.find()) {
             words.add(matcher.group());
         }
-
-        Print(Paren(words.get(0)));
+        Print(Express(words));
+        //Print(Paren(words.get(0)));
     }
 
     public static void main(String[] args) {
