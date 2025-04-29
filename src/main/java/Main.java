@@ -297,7 +297,7 @@ public class Main {
         if (words.charAt(0) == '(') return "(group " + Paren(words.substring(1, words.length() - 1)) + ")";
         if (words.charAt(0) == '\"') return Paren(words.substring(1, words.length() - 1));
         if (words.charAt(0) == '!' || words.charAt(0) == '-') {
-            return "(" + words.charAt(0) + Paren(words.substring(1, words.length())) + ")";
+            return "(" + words.charAt(0) + " " + Paren(words.substring(1, words.length())) + ")";
         }
 
         return Double.parseDouble(words) + "";
