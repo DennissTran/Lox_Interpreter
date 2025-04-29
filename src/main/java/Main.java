@@ -42,6 +42,7 @@ public class Main {
                 else if (c == '.') Print("DOT . null");
                 else if (c == ',') Print("COMMA , null");
                 else if (c == '+') Print("PLUS + null");
+                else if (c == '-') Print("MINUS - null");
             }
 
             System.out.println("EOF  null");
