@@ -31,6 +31,7 @@ public class Main {
             System.exit(1);
         }
 
+        int errors = 0;
 
         if (fileContents.length() > 0) {
             for (char c : fileContents.toCharArray()) {
@@ -46,7 +47,7 @@ public class Main {
                 else if (c == ';') Print("SEMICOLON ; null");
                 else {
                     System.err.println("[line 1] Error: Unexpected character: " + c);
-                    System.exit(65);
+                    errors = 65;
                 }
             }
 
@@ -54,5 +55,7 @@ public class Main {
         } else {
             System.out.println("EOF  null"); // Placeholder, remove this line when implementing the scanner
         }
+
+        System.exit(errors);
     }
 }
