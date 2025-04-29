@@ -1,1 +1,1 @@
-(42+33) > 36 != ("Success" != "Failure") != (43 >= 92)
+foo bar _hello

@@ -66,18 +66,24 @@ public class Main {
 
     static int readLine(String fileContents, int nline) {
         List <String> input = parseInput(fileContents);
+        input.add(" ");
 
         int errors = 0;
         int isString = 0;
         int isNumber = 0;
         String currentString = "";
         String currentNumber = "";
+        String identifier = "";
 
         int id = -1;
         for (String x : input) {
             ++id;
             if (x.equals("\"")) {
                 if (isNumber == 1) {
+                    if (identifier.length() > 0) {
+                        Print("IDENTIFIER " + identifier + " null");
+                        identifier = "";
+                    }
                     isNumber = 0;
                     Print("NUMBER " + currentNumber + " " + Double.parseDouble(currentNumber));
                     currentNumber = "";
@@ -85,6 +91,10 @@ public class Main {
                 isString ^= 1;
 
                 if (isString == 0) {
+                    if (identifier.length() > 0) {
+                        Print("IDENTIFIER " + identifier + " null");
+                        identifier = "";
+                    }
                     Print("STRING \"" + currentString + "\" " + currentString);
                     currentString = "";
                 }
@@ -93,6 +103,19 @@ public class Main {
 
             if (isString == 1) {
                 currentString = currentString + x;
+                continue;
+            }
+
+            if (spaceOperators.contains(x)) {
+                if (identifier.length() > 0) {
+                    Print("IDENTIFIER " + identifier + " null");
+                    identifier = "";
+                }
+                continue;
+            }
+
+            if (identifier.length() > 0) {
+                identifier = identifier + x;
                 continue;
             }
 
@@ -108,18 +131,24 @@ public class Main {
             }
 
             if (isNumber == 1) {
+                if (identifier.length() > 0) {
+                    Print("IDENTIFIER " + identifier + " null");
+                    identifier = "";
+                }
                 isNumber = 0;
                 Print("NUMBER " + currentNumber + " " + Double.parseDouble(currentNumber));
                 currentNumber = "";
             }
             if (x.equals("//")) break;
-            if (spaceOperators.contains(x)) continue;
 
             if (dictionary.containsKey(x)) {
+                if (identifier.length() > 0) {
+                    Print("IDENTIFIER " + identifier + " null");
+                    identifier = "";
+                }
                 Print(dictionary.get(x));
             } else {
-                System.err.println("[line " + nline + "] Error: Unexpected character: " + x);
-                errors = 65;
+                identifier = identifier + x;
             }
         }
 
@@ -138,7 +167,7 @@ public class Main {
 
     public static void main(String[] args) {
         sieve();
-        args = new String[] {"tokenize", "test.lox"};
+        //args = new String[] {"tokenize", "test.lox"};
 
         if (args.length < 2) {
             System.err.println("Usage: ./your_program.sh tokenize <filename>");
