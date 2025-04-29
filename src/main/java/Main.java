@@ -152,7 +152,6 @@ public class Main {
             } 
 
             if (identifier.length() > 0) {
-                if (!isIdetifier(identifier.charAt(0))) errors = 65;
                 identifier = identifier + x;
                 continue;
             }
@@ -164,12 +163,19 @@ public class Main {
             }
 
             if (x.equals("//")) break;
-            identifier = identifier + x;
+            
             if (isNumber == 1) {
                 isNumber = 0;
                 Print("NUMBER " + currentNumber + " " + Double.parseDouble(currentNumber));
                 currentNumber = "";
             }
+            if (isIdetifier(x.charAt(0))) {
+                identifier = identifier + x;
+            } else {
+                System.err.println("[line " + nline + "] Error: Unexpected character: " + x);
+                errors = 65;
+            }
+            
         }
 
         if (isString == 1) {
