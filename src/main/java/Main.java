@@ -306,9 +306,11 @@ public class Main {
             return;
         }
 
-        else {
+        else if (words.get(0).charAt(0) == '\"') {
             words.set(0, words.get(0).substring(1, words.get(0).length() - 1));
             Print(words.get(0));
+        } else {
+            Print("" + Double.parseDouble(words.get(0)));
         }
         //else Print("(" + words[1] + " " + Double.parseDouble(words[0]) + " " + Double.parseDouble(words[2]) + ")");
     }
