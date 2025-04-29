@@ -11,7 +11,7 @@ public class Main {
     static Set <String> spaceOperators = Set.of("\t", " ");
     static HashMap <String, String> dictionary = new HashMap <> ();
 
-    public static void sieve() {
+    static void sieve() {
         dictionary.put("(", "LEFT_PAREN ( null");
         dictionary.put(")", "RIGHT_PAREN ) null");
         dictionary.put("{", "LEFT_BRACE { null");
@@ -33,11 +33,11 @@ public class Main {
         dictionary.put("/", "SLASH / null");
     }
 
-    public static void Print(String msg) {
+    static void Print(String msg) {
         System.out.println(msg);
     }
 
-    public static int readLine(String fileContents, int nline) {
+    static List <String> parseInput(String fileContents) {
         List <String> input = new ArrayList <>();
         for (char c : fileContents.toCharArray()) {
             if (c == '=') {
@@ -61,10 +61,34 @@ public class Main {
                 input.add(c + "");
             } 
         }
+        return input;
+    }
+
+    static int readLine(String fileContents, int nline) {
+        List <String> input = parseInput(fileContents);
 
         int errors = 0;
+        int isString = 0;
+        String currentString = "";
+
         for (String x : input) {
+            if (x.equals("\"")) {
+                isString ^= 1;
+
+                if (isString == 0) {
+                    Print("STRING \"" + currentString + "\" " + currentString);
+                    currentString = "";
+                }
+                continue;
+            }
+
+            if (isString == 1) {
+                currentString = currentString + x;
+                continue;
+            }
+
             if (spaceOperators.contains(x)) continue;
+
             if (dictionary.containsKey(x)) {
                 Print(dictionary.get(x));
             } else {
@@ -72,6 +96,11 @@ public class Main {
                 errors = 65;
             }
             
+        }
+
+        if (isString == 1) {
+            System.err.println("[line " + nline + "] Error: Unterminated string.");
+            errors = 65;
         }
         return errors;
     }
