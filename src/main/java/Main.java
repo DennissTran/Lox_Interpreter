@@ -106,8 +106,7 @@ public class Main {
                 continue;
             }
 
-            if (isNumber == 1 && x.equals(".") && id < input.size() - 1 && digits.contains(input.get(id))) {
-                Print(id + "");
+            if (isNumber == 1 && x.equals(".") && id < input.size() - 1 && digits.contains(input.get(id + 1))) {
                 currentNumber = currentNumber + x;
                 continue;
             }
