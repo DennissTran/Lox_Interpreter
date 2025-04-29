@@ -43,6 +43,7 @@ public class Main {
                 else if (c == ',') Print("COMMA , null");
                 else if (c == '+') Print("PLUS + null");
                 else if (c == '-') Print("MINUS - null");
+                else if (c == ';') Print("SEMICOLON ; null");
             }
 
             System.out.println("EOF  null");
