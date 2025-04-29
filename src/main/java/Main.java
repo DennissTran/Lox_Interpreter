@@ -58,7 +58,6 @@ public class Main {
 
         List <String> input = new ArrayList <>();
         for (char c : fileContents.toCharArray()) {
-            if (c == ' ' || c == '\n' || c == '\r' || c == '\t') continue;
             if (c == '=') {
                 if (input.size() == 0) {
                     input.add(c + "");
@@ -81,11 +80,15 @@ public class Main {
             } 
         }
 
+        Set <String> spaceOperators = Set.of("\t", "\n", "\r", " ");
+        int nline = 1;
         for (String x : input) {
+            if (x.equals("\n")) nline++;
+            if (spaceOperators.contains(x)) continue;
             if (dictionary.containsKey(x)) {
                 Print(dictionary.get(x));
             } else {
-                System.err.println("[line 1] Error: Unexpected character: " + x);
+                System.err.println("[line " + nline + "] Error: Unexpected character: " + x);
                 errors = 65;
             }
             
