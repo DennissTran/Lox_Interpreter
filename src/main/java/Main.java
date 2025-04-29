@@ -120,6 +120,11 @@ public class Main {
                 continue;
             }
 
+            if (isNumber == 1 && x.equals(".") && id < input.size() - 1 && digits.contains(input.get(id + 1))) {
+                currentNumber = currentNumber + x;
+                continue;
+            }
+
             if (dictionary.containsKey(x)) {
                 if (identifier.length() > 0) {
                     Print("IDENTIFIER " + identifier + " null");
@@ -142,11 +147,6 @@ public class Main {
 
             if (digits.contains(x)) {
                 isNumber = 1;
-                currentNumber = currentNumber + x;
-                continue;
-            }
-
-            if (isNumber == 1 && x.equals(".") && id < input.size() - 1 && digits.contains(input.get(id + 1))) {
                 currentNumber = currentNumber + x;
                 continue;
             }
