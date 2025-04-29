@@ -193,7 +193,10 @@ public class Main {
 
     static void parseLine(String fileContents) {
         String [] words = fileContents.split(" ");
-        Print("(" + words[1] + " " + Double.parseDouble(words[0]) + " " + Double.parseDouble(words[2]) + ")");
+        if (keywords.containsKey(words[0])) {
+            Print(words[0]);
+        }
+        else Print("(" + words[1] + " " + Double.parseDouble(words[0]) + " " + Double.parseDouble(words[2]) + ")");
     }
 
     public static void main(String[] args) {
