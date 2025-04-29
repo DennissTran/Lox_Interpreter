@@ -310,18 +310,18 @@ public class Main {
             Print(words.get(0));
             return;
         }
-
+        if (words.get(0).charAt(0) == '!') {
+            Print("(! " + words.get(0).substring(1, words.get(0).length()) + ")");
+        }
         else if (words.get(0).charAt(0) == '\"' || words.get(0).charAt(0) == '(') {
             Print(Paren(words.get(0)));
         } else {
             Print("" + Double.parseDouble(words.get(0)));
         }
-        //else Print("(" + words[1] + " " + Double.parseDouble(words[0]) + " " + Double.parseDouble(words[2]) + ")");
     }
 
     public static void main(String[] args) {
         sieve();
-        //args = new String[] {"tokenize", "test.lox"};
 
         if (args.length < 2) {
             System.err.println("Usage: ./your_program.sh tokenize <filename>");
