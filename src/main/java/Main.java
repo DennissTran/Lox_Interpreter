@@ -62,7 +62,7 @@ public class Main {
                 if (input.size() == 0) {
                     input.add(c + "");
                 } else {
-                    if (relationalOperators.contains(c + "")) {
+                    if (relationalOperators.contains(input.get(input.size() - 1))) {
                         input.set(input.size() - 1, input.get(input.size() - 1) + "=");
                     } else {
                         input.add(c + "");
