@@ -72,7 +72,7 @@ public class Main {
                 input.add(c + "");
             } else {
                 System.err.println("[line 1] Error: Unexpected character: " + c);
-                errors = 65;
+                errors = 65 + 0;
             }
         }
 
