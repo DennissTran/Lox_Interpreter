@@ -44,6 +44,7 @@ public class Main {
                 else if (c == '+') Print("PLUS + null");
                 else if (c == '-') Print("MINUS - null");
                 else if (c == ';') Print("SEMICOLON ; null");
+                else System.err.println("[line 1] Error: Unexpected character: " + c);
             }
 
             System.out.println("EOF  null");
