@@ -191,12 +191,116 @@ public class Main {
         return errors;
     }
 
+    interface Expr {
+        double evaluate();
+    }
+
+    class Literal implements Expr {
+        double value;
+        Literal(double value) { this.value = value; }
+        public double evaluate() { return value; }
+    }
+
+    class Binary implements Expr {
+        Expr left;
+        String op;
+        Expr right;
+
+        Binary(Expr l, String op, Expr r) {
+            left = l; this.op = op; right = r;
+        }
+
+        public double evaluate() {
+            double lv = left.evaluate();
+            double rv = right.evaluate();
+            return switch (op) {
+                case "+" -> lv + rv;
+                case "-" -> lv - rv;
+                case "*" -> lv * rv;
+                case "/" -> lv / rv;
+                default -> throw new RuntimeException("Unknown operator: " + op);
+            };
+        }
+    }
+
+
+    class Parser {
+    private final String input;
+        private int pos = 0;
+
+        Parser(String input) {
+            this.input = input.replaceAll("\\s+", ""); // bỏ khoảng trắng
+        }
+
+        private char peek() {
+            return pos < input.length() ? input.charAt(pos) : '\0';
+        }
+
+        private char advance() {
+            return input.charAt(pos++);
+        }
+
+        private boolean match(char expected) {
+            if (peek() == expected) {
+                pos++;
+                return true;
+            }
+            return false;
+        }
+
+        public Expr parse() {
+            return expression();
+        }
+
+        private Expr expression() {
+            Expr expr = term();
+            while (peek() == '+' || peek() == '-') {
+                char op = advance();
+                Expr right = term();
+                expr = new Binary(expr, String.valueOf(op), right);
+            }
+            return expr;
+        }
+
+        private Expr term() {
+            Expr expr = factor();
+            while (peek() == '*' || peek() == '/') {
+                char op = advance();
+                Expr right = factor();
+                expr = new Binary(expr, String.valueOf(op), right);
+            }
+            return expr;
+        }
+
+        private Expr factor() {
+            if (match('(')) {
+                Expr expr = expression();
+                if (!match(')')) throw new RuntimeException("Expected ')'");
+                return expr;
+            }
+
+            return number();
+        }
+
+        private Expr number() {
+            int start = pos;
+            while (Character.isDigit(peek()) || peek() == '.') pos++;
+            if (start == pos) throw new RuntimeException("Expected number");
+            double val = Double.parseDouble(input.substring(start, pos));
+            return new Literal(val);
+        }
+    }
+
+
     static void parseLine(String fileContents) {
         String [] words = fileContents.split(" ");
         if (keywords.containsKey(words[0])) {
             Print(words[0]);
+            return;
         }
-        else Print("(" + words[1] + " " + Double.parseDouble(words[0]) + " " + Double.parseDouble(words[2]) + ")");
+
+        else Print("" + Double.parseDouble(words[0]));
+        //else Print("(" + words[1] + " " + Double.parseDouble(words[0]) + " " + Double.parseDouble(words[2]) + ")");
     }
 
     public static void main(String[] args) {
