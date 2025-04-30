@@ -193,117 +193,99 @@ public class Main {
         return errors;
     }
 
-    static interface Expr {
+    interface Expr {
         double evaluate();
-        void Traverse();
-        void setMessage();
     }
 
     static class Literal implements Expr {
-        String value;
-        String message = "none";
-        Literal(String value) { this.value = value; }
-        public double evaluate() { return Double.parseDouble(value); }
-        @Override
-        public void setMessage() {
-            message = "group";
-        }
-
-        public void Recur(String value) {
-            if (value.charAt(0) == '-' || value.charAt(0) == '!') {
-                System.out.print("(" + value.charAt(0) + " ");
-                Recur(value.substring(1, value.length()));
-                System.out.print(")");
-            } else {
-                try{
-                    System.out.print(Double.parseDouble(value));
-                } catch (NumberFormatException exp) {
-                    System.out.print(value);
-                }
+        private final Object value;
+        Literal(Object value) { this.value = value; }
+        public double evaluate() {
+            if (value instanceof Boolean) {
+                return (Boolean) value ? 1 : 0;
             }
+            return ((Number) value).doubleValue();
         }
+        public String toString() { return value.toString(); }
+    }
 
-        @Override
-        public void Traverse() {
-            Recur(value);
+    static class Unary implements Expr {
+        private final String operator;
+        private final Expr right;
+        Unary(String operator, Expr right) {
+            this.operator = operator;
+            this.right = right;
+        }
+        public double evaluate() {
+            double r = right.evaluate();
+            return switch (operator) {
+                case "!" -> (r == 0) ? 1 : 0;
+                case "-" -> -r;
+                default -> throw new RuntimeException("Unknown unary op: " + operator);
+            };
+        }
+        public String toString() {
+            return "(" + operator + " " + right + ")";
         }
     }
 
     static class Binary implements Expr {
-        Expr left;
-        String op;
-        Expr right;
-        String message = "none";
-        Binary(Expr l, String op, Expr r) {
-            left = l; this.op = op; right = r;
-        }
-        @Override
-        public void setMessage() {
-            message = "group";
+        private final Expr left;
+        private final String operator;
+        private final Expr right;
+
+        Binary(Expr left, String operator, Expr right) {
+            this.left = left;
+            this.operator = operator;
+            this.right = right;
         }
 
         public double evaluate() {
-            double lv = left.evaluate();
-            double rv = right.evaluate();
-            return switch (op) {
-                case "+" -> lv + rv;
-                case "-" -> lv - rv;
-                case "*" -> lv * rv;
-                case "/" -> lv / rv;
-                default -> throw new RuntimeException("Unknown operator: " + op);
+            double l = left.evaluate();
+            double r = right.evaluate();
+            return switch (operator) {
+                case "+" -> l + r;
+                case "-" -> l - r;
+                case "*" -> l * r;
+                case "/" -> l / r;
+                default -> throw new RuntimeException("Unknown binary op: " + operator);
             };
         }
 
-        public void Traverse() {
-            if (!message.equals("none")) System.out.print("(group ");
-            System.out.print("(" + op + " ");
-            left.Traverse();
-            System.out.print(" ");
-            right.Traverse();
-            System.out.print(")");
-            if (!message.equals("none")) System.out.print(")");
+        public String toString() {
+            return "(" + left + " " + operator + " " + right + ")";
         }
     }
 
+    static class Grouping implements Expr {
+        private final Expr expression;
+        Grouping(Expr expression) { this.expression = expression; }
+        public double evaluate() { return expression.evaluate(); }
+        public String toString() { return "(group " + expression + ")"; }
+    }
 
     static class Parser {
         private final String input;
         private int pos = 0;
-
         Parser(String input) {
-            this.input = input.replaceAll("\\s+", ""); // bỏ khoảng trắng
+            this.input = input.replaceAll("\\s+", "");
         }
-
-        private char peek() {
-            return pos < input.length() ? input.charAt(pos) : '\0';
-        }
-
-        private char advance() {
-            return input.charAt(pos++);
-        }
-
-        private boolean match(char expected) {
-            if (peek() == expected) {
-                pos++;
-                return true;
-            }
+        private char peek() { return pos < input.length() ? input.charAt(pos) : '\0'; }
+        private char advance() { return input.charAt(pos++); }
+        private boolean match(char c) {
+            if (peek() == c) { pos++; return true; }
             return false;
         }
-
-        public Expr parse() {
-            return expression();
-        }
-
+        Expr parse() { return expression(); }
         private Expr expression() {
             Expr expr = term();
             while (peek() == '+' || peek() == '-') {
                 char op = advance();
                 Expr right = term();
-                expr = new Binary(expr, String.valueOf(op), right);
+                expr = new Unary(op == '-' ? "-" : "+", new Binary(expr, String.valueOf(op), right));
             }
             return expr;
         }
-
         private Expr term() {
             Expr expr = factor();
             while (peek() == '*' || peek() == '/') {
@@ -313,24 +295,34 @@ public class Main {
             }
             return expr;
         }
-
         private Expr factor() {
+            if (match('!')) {
+                return new Unary("!", factor());
+            }
             if (match('(')) {
                 Expr expr = expression();
-                if (!match(')')) throw new RuntimeException("Expected ')'");
-                expr.setMessage();
-                return expr;
+                if (!match(')')) throw new RuntimeException("Expected ')' after expression");
+                return new Grouping(expr);
             }
-
-            return number();
+            return literal();
         }
-
-        private Expr number() {
-            int start = pos;
-            while (Character.isDigit(peek()) || peek() == '.' || peek() == '-' || peek() == '!' || Character.isLetter(peek())) pos++;
-            if (start == pos) throw new RuntimeException("Expected number");
-            String val = input.substring(start, pos);
-            return new Literal(val);
+        private Expr literal() {
+            if (Character.isDigit(peek())) {
+                int start = pos;
+                while (Character.isDigit(peek()) || peek() == '.') advance();
+                double v = Double.parseDouble(input.substring(start, pos));
+                return new Literal(v);
+            }
+            if (Character.isLetter(peek())) {
+                int start = pos;
+                while (Character.isLetter(peek())) advance();
+                String word = input.substring(start, pos);
+                if ("true".equals(word) || "false".equals(word)) {
+                    return new Literal(Boolean.parseBoolean(word));
+                }
+                throw new RuntimeException("Unknown literal: " + word);
+            }
+            throw new RuntimeException("Unexpected character: " + peek());
         }
     }
 
@@ -360,17 +352,9 @@ public class Main {
     }
 
     static void parseLine(String fileContents) {
-        List<String> words = new ArrayList<>();
-        Pattern pattern = Pattern.compile("\"[^\"]*\"|\\S+");  
-        Matcher matcher = pattern.matcher(fileContents);
-        while (matcher.find()) {
-            words.add(matcher.group());
-        }
         Parser parser = new Parser(fileContents);
         Expr expr = parser.parse();
-        expr.Traverse();
-        //Print("");
-        //Print(Paren(words.get(0)));
+        System.out.println(expr);
     }
 
     public static void main(String[] args) {
