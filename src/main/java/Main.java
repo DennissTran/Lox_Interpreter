@@ -357,7 +357,7 @@ public class Main {
         Parser parser = new Parser(fileContents);
         Expr expr = parser.parse();
         expr.Traverse();
-        Print("");
+        //Print("");
         //Print(Paren(words.get(0)));
     }
 
