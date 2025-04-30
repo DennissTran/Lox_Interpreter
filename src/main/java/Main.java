@@ -209,23 +209,23 @@ public class Main {
             message = "group";
         }
 
-        @Override
-        public void Traverse() {
-            String tvalue = value;
+        public void Recur(String value) {
             if (value.charAt(0) == '-' || value.charAt(0) == '!') {
                 System.out.print("(" + value.charAt(0) + " ");
-                tvalue = value.substring(1, value.length());
-            }
-
-            try{
-                System.out.print(Double.parseDouble(tvalue));
-            } catch (NumberFormatException exp) {
-                System.out.print(tvalue);
-            }
-            
-            if (value.charAt(0) == '-' || value.charAt(0) == '!') {
+                Recur(value.substring(1, value.length()));
                 System.out.print(")");
+            } else {
+                try{
+                    System.out.print(Double.parseDouble(value));
+                } catch (NumberFormatException exp) {
+                    System.out.print(value);
+                }
             }
+        }
+
+        @Override
+        public void Traverse() {
+            Recur(value);
         }
     }
 
