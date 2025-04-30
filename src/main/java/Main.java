@@ -211,8 +211,8 @@ public class Main {
 
         @Override
         public void Traverse() {
-            if (value < 0) System.out.print("(");
-            System.out.print(value);
+            if (value < 0) System.out.print("(- ");
+            System.out.print(Math.abs(value));
             if (value < 0) System.out.print(")");
         }
     }
