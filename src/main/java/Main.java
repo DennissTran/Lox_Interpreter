@@ -299,6 +299,11 @@ public class Main {
             if (match('!')) {
                 return new Unary("!", factor());
             }
+
+            if (match('-')) {
+                return new Unary("-", factor());
+            }
+
             if (match('(')) {
                 Expr expr = expression();
                 if (!match(')')) throw new RuntimeException("Expected ')' after expression");
