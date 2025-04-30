@@ -112,7 +112,7 @@ public class Main {
             identifier = "";
         }
         return identifier;
-        
+
     }
 
     static int readLine(String fileContents, int nline) {
@@ -196,12 +196,18 @@ public class Main {
     static interface Expr {
         double evaluate();
         void Traverse();
+        void setMessage();
     }
 
     static class Literal implements Expr {
         double value;
+        String message = "none";
         Literal(double value) { this.value = value; }
         public double evaluate() { return value; }
+        @Override
+        public void setMessage() {
+            message = "group";
+        }
 
         @Override
         public void Traverse() {
@@ -213,9 +219,13 @@ public class Main {
         Expr left;
         String op;
         Expr right;
-
+        String message = "none";
         Binary(Expr l, String op, Expr r) {
             left = l; this.op = op; right = r;
+        }
+        @Override
+        public void setMessage() {
+            message = "group";
         }
 
         public double evaluate() {
@@ -231,11 +241,13 @@ public class Main {
         }
 
         public void Traverse() {
+            if (!message.equals("none")) System.out.print("(group ");
             System.out.print("(" + op + " ");
             left.Traverse();
             System.out.print(" ");
             right.Traverse();
             System.out.print(")");
+            if (!message.equals("none")) System.out.print(")");
         }
     }
 
@@ -292,6 +304,7 @@ public class Main {
             if (match('(')) {
                 Expr expr = expression();
                 if (!match(')')) throw new RuntimeException("Expected ')'");
+                expr.setMessage();
                 return expr;
             }
 
