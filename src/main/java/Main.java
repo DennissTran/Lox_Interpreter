@@ -200,10 +200,10 @@ public class Main {
     }
 
     static class Literal implements Expr {
-        double value;
+        String value;
         String message = "none";
-        Literal(double value) { this.value = value; }
-        public double evaluate() { return value; }
+        Literal(String value) { this.value = value; }
+        public double evaluate() { return Double.parseDouble(value); }
         @Override
         public void setMessage() {
             message = "group";
@@ -211,9 +211,21 @@ public class Main {
 
         @Override
         public void Traverse() {
-            if (value < 0) System.out.print("(- ");
-            System.out.print(Math.abs(value));
-            if (value < 0) System.out.print(")");
+            String tvalue = value;
+            if (value.charAt(0) == '-' || value.charAt(0) == '!') {
+                System.out.print("(" + value.charAt(0) + " ");
+                tvalue = value.substring(1, value.length());
+            }
+
+            try{
+                System.out.print(Double.parseDouble(tvalue));
+            } catch (NumberFormatException exp) {
+                System.out.print(tvalue);
+            }
+            
+            if (value.charAt(0) == '-' || value.charAt(0) == '!') {
+                System.out.print(")");
+            }
         }
     }
 
@@ -315,9 +327,9 @@ public class Main {
 
         private Expr number() {
             int start = pos;
-            while (Character.isDigit(peek()) || peek() == '.' || peek() == '-') pos++;
+            while (Character.isDigit(peek()) || peek() == '.' || peek() == '-' || peek() == '!' || Character.isLetter(peek())) pos++;
             if (start == pos) throw new RuntimeException("Expected number");
-            double val = Double.parseDouble(input.substring(start, pos));
+            String val = input.substring(start, pos);
             return new Literal(val);
         }
     }
