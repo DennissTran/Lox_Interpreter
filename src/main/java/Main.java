@@ -253,7 +253,7 @@ public class Main {
         }
 
         public String toString() {
-            return "(" + left + " " + operator + " " + right + ")";
+            return "(" + operator + " " + left + " " + right + ")";
         }
     }
 
