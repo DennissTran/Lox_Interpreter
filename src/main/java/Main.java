@@ -337,6 +337,10 @@ public class Main {
                 if ("true".equals(word) || "false".equals(word)) {
                     return new Literal(Boolean.parseBoolean(word));
                 }
+
+                if ("nil".equals(word)) {
+                    return new Literal("nil");
+                }
                 throw new RuntimeException("Unknown literal: " + word);
             }
             throw new RuntimeException("Unexpected character: " + peek());
