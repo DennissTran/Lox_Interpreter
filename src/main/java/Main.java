@@ -331,30 +331,6 @@ public class Main {
         }
     }
 
-    static String Paren(String words) {
-        if (keywords.containsKey(words)) return words;
-        if (words.charAt(0) == '(') return "(group " + Paren(words.substring(1, words.length() - 1)) + ")";
-        if (words.charAt(0) == '\"') return words.substring(1, words.length() - 1);
-        if (words.charAt(0) == '!' || words.charAt(0) == '-') {
-            return "(" + words.charAt(0) + " " + Paren(words.substring(1, words.length())) + ")";
-        }
-        if (Character.isDigit(words.charAt(0))) return Double.parseDouble(words) + "";
-        return words;
-    }
-
-    static String Express(List <String> words) {
-        if (words.size() == 1) return "" + Double.parseDouble(words.get(0));
-        if (words.get(0).charAt(0) == '\"') {
-            words.set(0, words.get(0).substring(1, words.get(0).length()));
-            String tmp = words.get(words.size() - 1).substring(0, words.get(words.size() - 1).length() - 1);
-            words.set(words.size() - 1, tmp);
-        }
-        String lastNumber = Double.parseDouble(words.get(words.size() - 1)) + "";
-        words.remove(words.size() - 1);
-        String op = words.get(words.size() - 1);
-        words.remove(words.size() - 1);
-        return "(" + op + " " + Express(words) + " " + lastNumber + ")";
-    }
 
     static void parseLine(String fileContents) {
         Parser parser = new Parser(fileContents);
@@ -372,11 +348,6 @@ public class Main {
 
         String command = args[0];
         String filename = args[1];
-
-        /*if (!command.equals("tokenize")) {
-            System.err.println("Unknown command: " + command);
-            System.exit(1);
-        }*/
 
         String fileContents = "";
         try {
