@@ -309,9 +309,21 @@ public class Main {
                 if (!match(')')) throw new RuntimeException("Expected ')' after expression");
                 return new Grouping(expr);
             }
+
             return literal();
         }
         private Expr literal() {
+            if (match('\"')) {
+                int start = pos;
+                while (peek() != '\"' && pos < input.length()) advance();
+                String v = input.substring(start, pos);
+                if (match('\"')) {
+                    return new Literal(v);
+                } else {
+
+                }
+            }
+
             if (Character.isDigit(peek())) {
                 int start = pos;
                 while (Character.isDigit(peek()) || peek() == '.') advance();
