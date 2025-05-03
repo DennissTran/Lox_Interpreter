@@ -448,6 +448,10 @@ public class Main {
                 return new Expr.Grouping(expr);
             }
 
+            if (match(TokenType.OR)) {
+                return new Expr.Literal("or");
+            }
+
             throw error(peek(), "Expect expression.");
         }
 
