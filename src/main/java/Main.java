@@ -237,7 +237,7 @@ public class Main {
                     } else if (isAlpha(c)) {
                         identifier();
                     } else {
-                        error(line, "Unexpected character.");
+                        error(line, "Unexpected character: " + c);
                     }
                     break;
             }
@@ -508,12 +508,6 @@ public class Main {
         Scanner scanner = new Scanner(source);
         List <Token> tokens = scanner.scanTokens();
 
-        //For tokenize
-        /*for (Token token : tokens) {
-            System.out.println(token);
-        }*/
-
-        //For parse
         Parser pa = new Parser(tokens);
         AstPrinter printer = new AstPrinter();
         System.out.println(printer.print(pa.expression()));
@@ -523,7 +517,6 @@ public class Main {
         Scanner scanner = new Scanner(source);
         List <Token> tokens = scanner.scanTokens();
 
-        //For tokenize
         for (Token token : tokens) {
             System.out.println(token);
         }
