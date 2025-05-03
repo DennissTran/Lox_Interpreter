@@ -1,362 +1,519 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.regex.*;
+import java.util.Map;
+
 
 public class Main {
-    static Set <String> relationalOperators = Set.of("<", "=", ">", "!");
-    static Set <String> spaceOperators = Set.of("\t", " ");
-    static HashMap <String, String> dictionary = new HashMap <> ();
-    static Set <String> digits = Set.of("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
-    static HashMap<String, String> keywords;
-    static void sieve() {
-        dictionary.put("(", "LEFT_PAREN ( null");
-        dictionary.put(")", "RIGHT_PAREN ) null");
-        dictionary.put("{", "LEFT_BRACE { null");
-        dictionary.put("}", "RIGHT_BRACE } null");
-        dictionary.put("*", "STAR * null");
-        dictionary.put(".", "DOT . null");
-        dictionary.put(",", "COMMA , null");
-        dictionary.put("+", "PLUS + null");
-        dictionary.put("-", "MINUS - null");
-        dictionary.put(";", "SEMICOLON ; null");
-        dictionary.put("=", "EQUAL = null");
-        dictionary.put("==", "EQUAL_EQUAL == null");
-        dictionary.put("!", "BANG ! null");
-        dictionary.put("!=", "BANG_EQUAL != null");
-        dictionary.put(">", "GREATER > null");
-        dictionary.put("<", "LESS < null");
-        dictionary.put("<=", "LESS_EQUAL <= null");
-        dictionary.put(">=", "GREATER_EQUAL >= null");
-        dictionary.put("/", "SLASH / null");
+    static int errors = 0;
+    static enum TokenType {
+        // Single-character tokens.
+        LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
+        COMMA, DOT, MINUS, PLUS, SEMICOLON, SLASH, STAR,
 
+        // One or two character tokens.
+        BANG, BANG_EQUAL,
+        EQUAL, EQUAL_EQUAL,
+        GREATER, GREATER_EQUAL,
+        LESS, LESS_EQUAL,
 
+        // Literals.
+        IDENTIFIER, STRING, NUMBER,
+
+        // Keywords.
+        AND, CLASS, ELSE, FALSE, FUN, FOR, IF, NIL, OR,
+        PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE,
+
+        // End of file
+        EOF
+    }
+    private static final Map <String, TokenType> keywords;
+
+    static {
         keywords = new HashMap<>();
-        keywords.put("and",    "AND");
-        keywords.put("class",  "CLASS");
-        keywords.put("else",   "ELSE");
-        keywords.put("false",  "FALSE");
-        keywords.put("for",    "FOR");
-        keywords.put("fun",    "FUN");
-        keywords.put("if",     "IF");
-        keywords.put("nil",    "NIL");
-        keywords.put("or",     "OR");
-        keywords.put("print",  "PRINT");
-        keywords.put("return", "RETURN");
-        keywords.put("super",  "SUPER");
-        keywords.put("this",   "THIS");
-        keywords.put("true",   "TRUE");
-        keywords.put("var",    "VAR");
-        keywords.put("while",  "WHILE");
+        keywords.put("and",    TokenType.AND);
+        keywords.put("class",  TokenType.CLASS);
+        keywords.put("else",   TokenType.ELSE);
+        keywords.put("false",  TokenType.FALSE);
+        keywords.put("for",    TokenType.FOR);
+        keywords.put("fun",    TokenType.FUN);
+        keywords.put("if",     TokenType.IF);
+        keywords.put("nil",    TokenType.NIL);
+        keywords.put("or",     TokenType.OR);
+        keywords.put("print",  TokenType.PRINT);
+        keywords.put("return", TokenType.RETURN);
+        keywords.put("super",  TokenType.SUPER);
+        keywords.put("this",   TokenType.THIS);
+        keywords.put("true",   TokenType.TRUE);
+        keywords.put("var",    TokenType.VAR);
+        keywords.put("while",  TokenType.WHILE);
     }
 
-    static void Print(String msg) {
-        System.out.println(msg);
+    static void error(int line, String message) {
+        report(line, "", message);
     }
 
-    static List <String> parseInput(String fileContents) {
-        List <String> input = new ArrayList <>();
-        for (char c : fileContents.toCharArray()) {
-            if (c == '=') {
-                if (input.size() == 0) {
-                    input.add(c + "");
-                } else {
-                    if (relationalOperators.contains(input.get(input.size() - 1))) {
-                        input.set(input.size() - 1, input.get(input.size() - 1) + "=");
+    private static void report(int line, String where, String message) {
+        System.err.println("[line " + line + "] Error" + where + ": " + message);
+        errors = 65;
+    }
+
+    static class Token {
+        final TokenType type;
+        final String lexeme;
+        final Object literal;
+        final int line; 
+
+        Token(TokenType type, String lexeme, Object literal, int line) {
+            this.type = type;
+            this.lexeme = lexeme;
+            this.literal = literal;
+            this.line = line;
+        }
+
+        public String toString() {
+            return type + " " + lexeme + " " + literal;
+        }
+    }
+
+    static class Scanner {
+        private final String source;
+        private final List <Token> tokens = new ArrayList<>();
+        private int start = 0;
+        private int current = 0;
+        private int line = 1;
+
+        private char peek() {
+            if (isAtEnd()) return '\0';
+            return source.charAt(current);
+        }
+
+        private char advance() {
+            return source.charAt(current++);
+        }
+
+        private boolean isAtEnd() {
+            return current >= source.length();
+        }
+
+        private boolean match(char expected) {
+            if (isAtEnd()) return false;
+            if (source.charAt(current) != expected) return false;
+
+            current++;
+            return true;
+        }
+
+        Scanner(String source) {
+            this.source = source;
+        }
+
+
+        private void addToken(TokenType type) {
+            addToken(type, null);
+        }
+
+        private void addToken(TokenType type, Object literal) {
+            String text = source.substring(start, current);
+            tokens.add(new Token(type, text, literal, line));
+        }
+
+        private void string() {
+            while (peek() != '"' && !isAtEnd()) {
+                if (peek() == '\n') line++;
+                advance();
+            }
+
+            if (isAtEnd()) {
+                error(line, "Unterminated string.");
+                return;
+            }
+
+            // The closing ".
+            advance();
+
+            // Trim the surrounding quotes.
+            String value = source.substring(start + 1, current - 1);
+            addToken(TokenType.STRING, value);
+        }
+
+        private char peekNext() {
+            if (current + 1 >= source.length()) return '\0';
+            return source.charAt(current + 1);
+        } 
+
+        private void number() {
+            while (isDigit(peek())) advance();
+
+            // Look for a fractional part.
+            if (peek() == '.' && isDigit(peekNext())) {
+                // Consume the "."
+                advance();
+
+                while (isDigit(peek())) advance();
+            }
+
+            addToken(TokenType.NUMBER, Double.parseDouble(source.substring(start, current)));
+        }
+
+        private void identifier() {
+            while (isAlphaNumeric(peek())) advance();
+            String text = source.substring(start, current);
+            TokenType type = keywords.get(text);
+            if (type == null) type = TokenType.IDENTIFIER;
+            addToken(type);
+        }
+
+        private boolean isAlpha(char c) {
+            return (c >= 'a' && c <= 'z') ||
+                   (c >= 'A' && c <= 'Z') ||
+                    c == '_';
+        }
+
+        private boolean isAlphaNumeric(char c) {
+            return isAlpha(c) || isDigit(c);
+        }
+
+        private void scanToken() {
+            char c = advance();
+            switch (c) {
+                case '(': addToken(TokenType.LEFT_PAREN); break;
+                case ')': addToken(TokenType.RIGHT_PAREN); break;
+                case '{': addToken(TokenType.LEFT_BRACE); break;
+                case '}': addToken(TokenType.RIGHT_BRACE); break;
+                case ',': addToken(TokenType.COMMA); break;
+                case '.': addToken(TokenType.DOT); break;
+                case '-': addToken(TokenType.MINUS); break;
+                case '+': addToken(TokenType.PLUS); break;
+                case ';': addToken(TokenType.SEMICOLON); break;
+                case '*': addToken(TokenType.STAR); break;
+                case '!':
+                    addToken(match('=') ? TokenType.BANG_EQUAL : TokenType.BANG);
+                    break;
+                case '=':
+                    addToken(match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL);
+                    break;
+                case '<':
+                    addToken(match('=') ? TokenType.LESS_EQUAL : TokenType.LESS);
+                    break;
+                case '>':
+                    addToken(match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);
+                    break;
+                case '/':
+                    if (match('/')) {
+                        // A comment goes until the end of the line.
+                        while (peek() != '\n' && !isAtEnd()) advance();
                     } else {
-                        input.add(c + "");
+                        addToken(TokenType.SLASH);
                     }
+                    break;
+
+                case ' ':
+                case '\r':
+                case '\t':
+                    // Ignore whitespace.
+                    break;
+
+                case '\n':
+                    line++;
+                    break;
+
+                case '"': 
+                    string();
+                    break;
+
+                case 'o':
+                    if (match('r')) {
+                        addToken(TokenType.OR);
+                    }
+                    break;
+
+                default:
+                    if (isDigit(c)) {
+                        number();
+                    } else if (isAlpha(c)) {
+                        identifier();
+                    } else {
+                        error(line, "Unexpected character.");
+                    }
+                    break;
+            }
+        }
+
+        private boolean isDigit(char c) {
+            return c >= '0' && c <= '9';
+        } 
+
+        List <Token> scanTokens() {
+            while (!isAtEnd()) {
+                // We are at the beginning of the next lexeme.
+                start = current;
+                scanToken();
+            }
+
+            tokens.add(new Token(TokenType.EOF, "", null, line));
+            return tokens;
+        }
+    }
+
+    static abstract class Expr{
+        interface Visitor <R> {
+            R visitBinaryExpr(Binary expr);
+            R visitGroupingExpr(Grouping expr);
+            R visitLiteralExpr(Literal expr);
+            R visitUnaryExpr(Unary expr);
+        }
+
+        abstract <R> R accept (Visitor <R> visitor);
+
+        static class Binary extends Expr {
+            final Expr left;
+            final Token operator;
+            final Expr right;
+
+            Binary(Expr left, Token operator, Expr right) {
+                this.left = left;
+                this.operator = operator;
+                this.right = right;
+            }
+
+            @Override
+            <R> R accept(Visitor <R> visitor) {
+                return visitor.visitBinaryExpr(this);
+            }
+        }
+
+        static class Grouping extends Expr {
+            final Expr expression;
+
+            Grouping(Expr expression) {
+                this.expression = expression;
+            }
+
+            @Override
+            <R> R accept(Visitor <R> visitor) {
+                return visitor.visitGroupingExpr(this);
+            }
+        }
+
+        static class Literal extends Expr {
+            final Object value;
+
+            Literal(Object value) {
+                this.value = value;
+            }
+
+            @Override
+            <R> R accept(Visitor <R> visitor) {
+                return visitor.visitLiteralExpr(this);
+            }
+        }
+
+        static class Unary extends Expr {
+            final Token operator;
+            final Expr right;
+
+            Unary(Token operator, Expr right) {
+                this.operator = operator;
+                this.right = right;
+            }
+
+            @Override
+            <R> R accept(Visitor <R> visitor) {
+                return visitor.visitUnaryExpr(this);
+            }
+        }
+    }
+
+    static class AstPrinter implements Expr.Visitor<String> {
+        String print(Expr expr) {
+            return expr.accept(this);
+        }
+
+        public String visitBinaryExpr(Expr.Binary expr) {
+            return parenthesize(expr.operator.lexeme, expr.left, expr.right);
+        }
+
+        public String visitGroupingExpr(Expr.Grouping expr) {
+            return parenthesize("group", expr.expression);
+        }
+
+        public String visitLiteralExpr(Expr.Literal expr) {
+            if (expr.value == null) return "nil";
+            return expr.value.toString();
+        }
+
+        public String visitUnaryExpr(Expr.Unary expr) {
+            return parenthesize(expr.operator.lexeme, expr.right);
+        }
+
+        private String parenthesize(String name, Expr... exprs) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("(").append(name);
+            for (Expr expr : exprs) {
+                builder.append(" ");
+                builder.append(expr.accept(this));
+            }
+            builder.append(")");
+            return builder.toString();
+        }
+    }
+
+    static class Parser{
+        private static List <Token> tokens;
+        private static int current = 0;
+
+        Parser(List <Token> tokens) {
+            this.tokens = tokens;
+        }
+
+        static Expr expression() {
+            return equality();
+        }
+
+        private static Expr equality() {
+            Expr expr = comparison();
+
+            while (match(TokenType.BANG_EQUAL, TokenType.EQUAL_EQUAL)) {
+                Token operator = previous();
+                Expr right = comparison();
+                expr = new Expr.Binary(expr, operator, right);
+            }
+
+            return expr;
+        }
+
+        private static Expr comparison() {
+            Expr expr = term();
+
+            while (match(TokenType.GREATER, TokenType.GREATER_EQUAL, 
+                TokenType.LESS, TokenType.LESS_EQUAL)) {
+                Token operator = previous();
+                Expr right = term();
+                expr = new Expr.Binary(expr, operator, right);
+            }
+
+            return expr;
+        }
+
+        private static Expr term() {
+            Expr expr = factor();
+
+            while (match(TokenType.PLUS, TokenType.MINUS)) {
+                Token operator = previous();
+                Expr right = factor();
+                expr = new Expr.Binary(expr, operator, right);
+            }
+
+            return expr;
+        }
+
+        private static Expr factor() {
+            Expr expr = unary();
+
+            while (match(TokenType.STAR, TokenType.SLASH)) {
+                Token operator = previous();
+                Expr right = unary();
+                expr = new Expr.Binary(expr, operator, right);
+            }
+
+            return expr;
+        }
+
+        private static Expr unary() {
+            if (match(TokenType.BANG, TokenType.MINUS)) {
+                Token operator = previous();
+                Expr right = unary();
+                return new Expr.Unary(operator, right);
+            }
+
+            return primary();
+        }
+
+        private static Expr primary() {
+            if (match(TokenType.FALSE)) return new Expr.Literal(false);
+            if (match(TokenType.TRUE)) return new Expr.Literal(true);
+            if (match(TokenType.NIL)) return new Expr.Literal(null);
+
+            if (match(TokenType.NUMBER, TokenType.STRING)) {
+                return new Expr.Literal(previous().literal);
+            }
+
+            if (match(TokenType.LEFT_PAREN)) {
+                Expr expr = expression();
+                consume(TokenType.RIGHT_PAREN, "Expect ')' after expression.");
+                return new Expr.Grouping(expr);
+            }
+
+            throw error(peek(), "Expect expression.");
+        }
+
+        private static boolean match(TokenType... types) {
+            for (TokenType type : types) {
+                if (check(type)) {
+                    advance();
+                    return true;
                 }
-            } else if (c == '/') {
-                if (input.size() == 0 || !input.get(input.size() - 1).equals("/")) {
-                    input.add(c + "");
-                } else {
-                    input.set(input.size() - 1, input.get(input.size() - 1) + "/");
-                }
-            } else {
-                input.add(c + "");
-            } 
-        }
-        return input;
-    }
-
-    static boolean isIdetifier(char c) {
-        if (c == '_') return true;
-        if (c >= 'a' && c <= 'z') return true;
-        if (c >= 'A' && c <= 'Z') return true;
-        return false;
-    }
-
-    static String printNumber(String currentNumber) {
-        if (currentNumber.length() > 0) {
-            Print("NUMBER " + currentNumber + " " + Double.parseDouble(currentNumber));
-            currentNumber = "";
-        }
-        return currentNumber;
-    }
-
-    static String printIdentifier(String identifier) {
-        if (identifier.length() > 0) {
-            if (keywords.containsKey(identifier)) {
-                Print(keywords.get(identifier) + " " + identifier + " null");
-            } 
-
-            else {
-                Print("IDENTIFIER " + identifier + " null");
             }
-
-            identifier = "";
-        }
-        return identifier;
-
-    }
-
-    static int readLine(String fileContents, int nline) {
-        List <String> input = parseInput(fileContents);
-        input.add(" ");
-
-        int errors = 0;
-        int isString = 0;
-        String currentString = "";
-        String currentNumber = "";
-        String identifier = "";
-
-        int id = -1;
-        for (String x : input) {
-            ++id;
-            if (x.equals("\"")) {
-                identifier = printIdentifier(identifier);
-                currentNumber = printNumber(currentNumber);
-
-                isString ^= 1;
-                if (isString == 0) {
-                    Print("STRING \"" + currentString + "\" " + currentString);
-                    currentString = "";
-                }
-                continue;
-            }
-
-            if (isString == 1) {
-                currentString = currentString + x;
-                continue;
-            }
-
-            if (spaceOperators.contains(x)) {
-                identifier = printIdentifier(identifier);
-                currentNumber = printNumber(currentNumber);
-                continue;
-            }
-
-            if (currentNumber.length() > 0 && x.equals(".") && id < input.size() - 1 && digits.contains(input.get(id + 1))) {
-                currentNumber = currentNumber + x;
-                continue;
-            }
-
-            if (dictionary.containsKey(x)) {
-                identifier = printIdentifier(identifier);
-                currentNumber = printNumber(currentNumber);
-
-                Print(dictionary.get(x));
-                continue;
-            } 
-
-            if (identifier.length() > 0) {
-                identifier = identifier + x;
-                continue;
-            }
-
-            if (digits.contains(x)) {
-                currentNumber = currentNumber + x;
-                continue;
-            }
-
-            if (x.equals("//")) break;
-            
-            currentNumber = printNumber(currentNumber);
-
-            if (isIdetifier(x.charAt(0))) {
-                identifier = identifier + x;
-            } else {
-                System.err.println("[line " + nline + "] Error: Unexpected character: " + x);
-                errors = 65;
-            } 
-        }
-
-        if (isString == 1) {
-            System.err.println("[line " + nline + "] Error: Unterminated string.");
-            errors = 65;
-        }
-        return errors;
-    }
-
-    interface Expr {
-        double evaluate();
-    }
-
-    static class Literal implements Expr {
-        private final Object value;
-        Literal(Object value) { this.value = value; }
-        public double evaluate() {
-            if (value instanceof Boolean) {
-                return (Boolean) value ? 1 : 0;
-            }
-            return ((Number) value).doubleValue();
-        }
-        public String toString() { return value.toString(); }
-    }
-
-    static class Unary implements Expr {
-        private final String operator;
-        private final Expr right;
-        Unary(String operator, Expr right) {
-            this.operator = operator;
-            this.right = right;
-        }
-        public double evaluate() {
-            double r = right.evaluate();
-            return switch (operator) {
-                case "!" -> (r == 0) ? 1 : 0;
-                case "-" -> -r;
-                default -> throw new RuntimeException("Unknown unary op: " + operator);
-            };
-        }
-        public String toString() {
-            return "(" + operator + " " + right + ")";
-        }
-    }
-
-    static class Binary implements Expr {
-        private final Expr left;
-        private final String operator;
-        private final Expr right;
-
-        Binary(Expr left, String operator, Expr right) {
-            this.left = left;
-            this.operator = operator;
-            this.right = right;
-        }
-
-        public double evaluate() {
-            double l = left.evaluate();
-            double r = right.evaluate();
-            return switch (operator) {
-                case "+" -> l + r;
-                case "-" -> l - r;
-                case "*" -> l * r;
-                case "/" -> l / r;
-                default -> throw new RuntimeException("Unknown binary op: " + operator);
-            };
-        }
-
-        public String toString() {
-            return "(" + operator + " " + left + " " + right + ")";
-        }
-    }
-
-    static class Grouping implements Expr {
-        private final Expr expression;
-        Grouping(Expr expression) { this.expression = expression; }
-        public double evaluate() { return expression.evaluate(); }
-        public String toString() { return "(group " + expression + ")"; }
-    }
-
-    static class Parser {
-        private final String input;
-        private int pos = 0;
-        Parser(String input) {
-            this.input = input.replaceAll("\\s+", "");
-        }
-        private char peek() { return pos < input.length() ? input.charAt(pos) : '\0'; }
-        private char advance() { return input.charAt(pos++); }
-        private boolean match(char c) {
-            if (peek() == c) { pos++; return true; }
             return false;
         }
-        Expr parse() { return expression(); }
-        private Expr expression() {
-            Expr expr = term();
-            while (peek() == '+' || peek() == '-') {
-                char op = advance();
-                Expr right = term();
-                expr = new Unary(op == '-' ? "-" : "+", new Binary(expr, String.valueOf(op), right));
-            }
-            return expr;
+
+        private static Token consume(TokenType type, String message) {
+            if (check(type)) return advance();
+            throw error(peek(), message);
         }
-        private Expr term() {
-            Expr expr = factor();
-            while (peek() == '*' || peek() == '/') {
-                char op = advance();
-                Expr right = factor();
-                expr = new Binary(expr, String.valueOf(op), right);
-            }
-            return expr;
+
+        private static boolean check(TokenType type) {
+            if (isAtEnd()) return false;
+            return peek().type == type;
         }
-        private Expr factor() {
-            if (match('!')) {
-                return new Unary("!", factor());
-            }
 
-            if (match('-')) {
-                return new Unary("-", factor());
-            }
-
-            if (match('(')) {
-                Expr expr = expression();
-                if (!match(')')) throw new RuntimeException("Expected ')' after expression");
-                return new Grouping(expr);
-            }
-
-            return literal();
+        private static Token advance() {
+            if (!isAtEnd()) current++;
+            return previous();
         }
-        private Expr literal() {
-            if (match('\"')) {
-                int start = pos;
-                while (peek() != '\"' && pos < input.length()) advance();
-                String v = input.substring(start, pos);
-                if (match('\"')) {
-                    return new Literal(v);
-                } else {
 
-                }
-            }
-
-            if (Character.isDigit(peek())) {
-                int start = pos;
-                while (Character.isDigit(peek()) || peek() == '.') advance();
-                double v = Double.parseDouble(input.substring(start, pos));
-                return new Literal(v);
-            }
-            if (Character.isLetter(peek())) {
-                int start = pos;
-                while (Character.isLetter(peek())) advance();
-                String word = input.substring(start, pos);
-                if ("true".equals(word) || "false".equals(word)) {
-                    return new Literal(Boolean.parseBoolean(word));
-                }
-
-                if ("nil".equals(word)) {
-                    return new Literal("nil");
-                }
-                throw new RuntimeException("Unknown literal: " + word);
-            }
-            throw new RuntimeException("Unexpected character: " + peek());
+        private static boolean isAtEnd() {
+            return peek().type == TokenType.EOF;
         }
+
+        private static Token peek() {
+            return tokens.get(current);
+        }
+
+        private static Token previous() {
+            return tokens.get(current - 1);
+        }
+
+        private static ParseError error(Token token, String message) {
+            System.err.println("[line " + token.line + "] Error at " +
+                (token.type == TokenType.EOF ? "end" : "'" + token.lexeme + "'") +
+                ": " + message);
+            return new ParseError();
+        }
+
+        private static class ParseError extends RuntimeException {}
     }
 
+    static void parseLine(String source) {
+        Scanner scanner = new Scanner(source);
+        List <Token> tokens = scanner.scanTokens();
 
-    static void parseLine(String fileContents) {
-        Parser parser = new Parser(fileContents);
-        Expr expr = parser.parse();
-        System.out.println(expr);
+        //For tokenize
+        /*for (Token token : tokens) {
+            System.out.println(token);
+        }*/
+
+        //For parse
+        Parser pa = new Parser(tokens);
+        AstPrinter printer = new AstPrinter();
+        System.out.println(printer.print(pa.expression()));
     }
 
     public static void main(String[] args) {
-        sieve();
-
         if (args.length < 2) {
             System.err.println("Usage: ./your_program.sh tokenize <filename>");
             System.exit(1);
@@ -378,19 +535,16 @@ public class Main {
         String [] lines = fileContents.split("\\R");
 
         if (command.equals("tokenize")) {
-            int errors = 0;
-        
+            /*int errors = 0;
             for (int i = 0; i < lines.length; i++) {
                 errors = readLine(lines[i], i + 1);
             }
 
             System.out.println("EOF  null");
-            System.exit(errors);
+            System.exit(errors);*/
         } else if (command.equals("parse")) {
-            for (int i = 0; i < lines.length; i++) {
-                parseLine(lines[i]);
-            }
+            parseLine(fileContents);
+            System.exit(errors);
         }
-        
     }
 }
