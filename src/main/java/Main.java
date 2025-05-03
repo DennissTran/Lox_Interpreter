@@ -450,9 +450,9 @@ public class Main {
 
             //System.out.println(peek().type.toString().toLowerCase());
 
-            if (keywords.containsKey(peek().type.toString().toLowerCase())) {
+            /*if (keywords.containsKey(peek().type.toString().toLowerCase())) {
                 return new Expr.Literal(advance());
-            }
+            }*/
 
             throw error(peek(), "Expect expression.");
         }
@@ -519,6 +519,16 @@ public class Main {
         System.out.println(printer.print(pa.expression()));
     }
 
+    static void scanLine(String source) {
+        Scanner scanner = new Scanner(source);
+        List <Token> tokens = scanner.scanTokens();
+
+        //For tokenize
+        for (Token token : tokens) {
+            System.out.println(token);
+        }
+    }
+
     public static void main(String[] args) {
         if (args.length < 2) {
             System.err.println("Usage: ./your_program.sh tokenize <filename>");
@@ -541,13 +551,8 @@ public class Main {
         String [] lines = fileContents.split("\\R");
 
         if (command.equals("tokenize")) {
-            /*int errors = 0;
-            for (int i = 0; i < lines.length; i++) {
-                errors = readLine(lines[i], i + 1);
-            }
-
-            System.out.println("EOF  null");
-            System.exit(errors);*/
+            scanLine(fileContents);
+            System.exit(errors);
         } else if (command.equals("parse")) {
             parseLine(fileContents);
             System.exit(errors);
