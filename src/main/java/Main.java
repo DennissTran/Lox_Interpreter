@@ -448,8 +448,10 @@ public class Main {
                 return new Expr.Grouping(expr);
             }
 
-            if (match(TokenType.OR)) {
-                return new Expr.Literal("or");
+            //System.out.println(peek().type.toString().toLowerCase());
+
+            if (keywords.containsKey(peek().type.toString().toLowerCase())) {
+                return new Expr.Literal(advance());
             }
 
             throw error(peek(), "Expect expression.");
