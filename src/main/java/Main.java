@@ -484,6 +484,7 @@ public class Main {
                     checkNumberOperands(expr.operator, left, right);
                     return (double)left < (double)right;
                 case LESS_EQUAL:
+                    checkNumberOperands(expr.operator, left, right);
                     return (double)left <= (double)right;
                 case BANG_EQUAL: 
                     return !isEqual(left, right);
