@@ -454,7 +454,8 @@ public class Main {
                 return new Expr.Literal(advance());
             }*/
 
-            throw error(peek(), "Expect expression.");
+            error(peek(), "Expect expression.");
+            return new Expr.Literal(null);
         }
 
         private static boolean match(TokenType... types) {
@@ -469,7 +470,8 @@ public class Main {
 
         private static Token consume(TokenType type, String message) {
             if (check(type)) return advance();
-            throw error(peek(), message);
+            error(peek(), message);
+            return advance();
         }
 
         private static boolean check(TokenType type) {
@@ -494,11 +496,12 @@ public class Main {
             return tokens.get(current - 1);
         }
 
-        private static ParseError error(Token token, String message) {
+        private static void error(Token token, String message) {
             System.err.println("[line " + token.line + "] Error at " +
                 (token.type == TokenType.EOF ? "end" : "'" + token.lexeme + "'") +
                 ": " + message);
-            return new ParseError();
+            //return new ParseError();
+            System.exit(65);
         }
 
         private static class ParseError extends RuntimeException {}
