@@ -154,7 +154,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private void checkNumberOperands(Token operator,
                                Object left, Object right) {
         if (left instanceof Double && right instanceof Double) return;
-
+        Main.EXIT_CODE = 70;
         throw new RuntimeError(operator, "Operands must be numbers.");
     }
 
