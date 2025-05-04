@@ -95,14 +95,14 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
 
+    @SuppressWarnings("finally")
     public Object evaluate(Expr expr) {
         try {
             return expr.accept(this);
         } catch (RuntimeError error) {
             runtimeError(error);
-        } finally {
-            return null;
-        }
+        } 
+        return expr.accept(this);
     }
 
     public Object visitLiteralExpr(Expr.Literal expr) {

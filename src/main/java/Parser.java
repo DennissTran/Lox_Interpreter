@@ -170,8 +170,10 @@ public class Parser {
     private static Expr primary() {
         if (match(TokenType.FALSE))
             return new Expr.Literal(false);
-        if (match(TokenType.TRUE))
+        if (match(TokenType.TRUE)) {
             return new Expr.Literal(true);
+        }
+            
         if (match(TokenType.NIL))
             return new Expr.Literal(null);
 
