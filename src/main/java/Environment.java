@@ -28,7 +28,7 @@ public class Environment {
             return;
         }
 
-        throw new Interpreter.RuntimeError(name, "Undefined variable '" + name.lexeme + "'.");
+        throw new RuntimeError(name, "Undefined variable '" + name.lexeme + "'.");
     }
 
     Object get(Token name) {
@@ -40,6 +40,6 @@ public class Environment {
             return enclosing.get(name);
         }
 
-        throw new Interpreter.RuntimeError(name, "Undefined variable '" + name.lexeme + "'.");
+        throw new RuntimeError(name, "Undefined variable '" + name.lexeme + "'.");
     }
 }

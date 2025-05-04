@@ -112,14 +112,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return evaluate(expr.expression);
     }
 
-    static class RuntimeError extends RuntimeException {
-        final Token token;
-
-        RuntimeError(Token token, String message) {
-            super(message);
-            this.token = token;
-        }
-    }
+    
 
     private void checkNumberOperand(Token operator, Object operand) {
         if (operand instanceof Double) return;

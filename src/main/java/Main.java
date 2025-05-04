@@ -31,7 +31,16 @@ public class Main {
 
         Parser pa = new Parser(tokens);
         Interpreter interpreter = new Interpreter();
-        System.out.println(stringify(interpreter.evaluate(pa.expression())));
+        try {
+            System.out.println(stringify(interpreter.evaluate(pa.expression())));
+        } catch (RuntimeError error) {
+            System.err.println(error.getMessage() + "\n[line " + error.token.line + "]");
+            EXIT_CODE = 70;
+        } catch (ParseError error) {
+            System.err.println(error.getMessage());
+            EXIT_CODE = 65;
+        }
+        
     }
 
     private static String stringify(Object evaluate) {
@@ -54,6 +63,9 @@ public class Main {
         Interpreter interpreter = new Interpreter();
         try{
             interpreter.interpret(pa.parse());
+        } catch (RuntimeError error) {
+            System.err.println(error.getMessage() + "\n[line " + error.token.line + "]");
+            EXIT_CODE = 70;
         } catch (ParseError error) {
             System.err.println(error.getMessage());
             EXIT_CODE = 65;
@@ -72,7 +84,8 @@ public class Main {
         String fileContents = "";
         try {
             fileContents = Files.readString(Path.of(filename));
-        } catch (IOException e) {
+        } 
+        catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
             System.exit(1);
         }
@@ -95,6 +108,7 @@ public class Main {
             default:
                 break;
         }
+        //System.out.println("Exit code: " + EXIT_CODE);
         System.exit(EXIT_CODE);
     }
 }
