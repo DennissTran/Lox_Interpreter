@@ -208,7 +208,7 @@ public class Scanner {
             scanToken();
         }
 
-        if (Main.EXIT_CODE == 0) tokens.add(new Token(TokenType.EOF, "", null, line));
+        tokens.add(new Token(TokenType.EOF, "", null, line));
         return tokens;
     }
 }
