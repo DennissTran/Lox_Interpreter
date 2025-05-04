@@ -95,14 +95,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
 
-    @SuppressWarnings("finally")
     public Object evaluate(Expr expr) {
         try {
-            return expr.accept(this);
+            return stringify(expr.accept(this));
         } catch (RuntimeError error) {
             runtimeError(error);
         } 
-        System.out.println("Error: ");
         return expr.accept(this);
     }
 
