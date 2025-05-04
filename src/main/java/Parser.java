@@ -236,9 +236,9 @@ public class Parser {
     }
 
     private void error(Token token, String message) {
-        System.err.println("[line " + token.line + "] Error at " +
-                (token.type == TokenType.EOF ? "end" : "'" + token.lexeme + "'") +
-                ": " + message);
         Main.EXIT_CODE = 65;
+        throw new ParseError("[line " + token.line + "] Error at " +
+                (token.type == TokenType.EOF ? "end" : "'" + token.lexeme + "'") +
+                ": " + message);        
     }
 }

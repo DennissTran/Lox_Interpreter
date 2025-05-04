@@ -49,6 +49,7 @@ public class Main {
     void runLine(String source) {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
+
         Parser pa = new Parser(tokens);
         Interpreter interpreter = new Interpreter();
         interpreter.interpret(pa.parse());
