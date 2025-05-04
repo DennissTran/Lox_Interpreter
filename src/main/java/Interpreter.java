@@ -96,7 +96,13 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
 
     public Object evaluate(Expr expr) {
-        return expr.accept(this);
+        try {
+            return expr.accept(this);
+        } catch (RuntimeError error) {
+            runtimeError(error);
+        } finally {
+            return null;
+        }
     }
 
     public Object visitLiteralExpr(Expr.Literal expr) {
