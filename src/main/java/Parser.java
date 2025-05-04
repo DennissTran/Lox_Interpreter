@@ -24,7 +24,7 @@ public class Parser {
             return varDeclaration();
         }
         return statement();
-
+        
     }
 
     private void synchronize() {

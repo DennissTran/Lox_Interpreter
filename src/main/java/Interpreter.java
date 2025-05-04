@@ -42,13 +42,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitVarStmt(Stmt.Var stmt) {
-        Object value = evaluate(stmt.initializer);  
-        if (value == null) {
-            throw new RuntimeError(stmt.name, "Variable '" + stmt.name.lexeme + "' is not initialized.");
+        Object value = null;
+        if (stmt.initializer != null) {
+            value = evaluate(stmt.initializer);
         }
-        if (value instanceof String) {
-            value = ((String) value).toLowerCase(); // Convert to lowercase
-        }   
+
         environment.define(stmt.name.lexeme, value);
         return null;
     }
