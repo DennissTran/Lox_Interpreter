@@ -20,15 +20,11 @@ public class Parser {
     }
 
     private Stmt declaration() {
-        try {
-            if (match(TokenType.VAR)) {
-                return varDeclaration();
-            }
-            return statement();
-        } catch (ParseError error) {
-            synchronize();
-            return null;
+        if (match(TokenType.VAR)) {
+            return varDeclaration();
         }
+        return statement();
+
     }
 
     private void synchronize() {

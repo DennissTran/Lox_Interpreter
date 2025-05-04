@@ -52,7 +52,12 @@ public class Main {
 
         Parser pa = new Parser(tokens);
         Interpreter interpreter = new Interpreter();
-        interpreter.interpret(pa.parse());
+        try{
+            interpreter.interpret(pa.parse());
+        } catch (ParseError error) {
+            System.err.println(error.getMessage());
+            EXIT_CODE = 65;
+        }
     }
 
     public static void main(String[] args) {
