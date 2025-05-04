@@ -123,6 +123,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     private void checkNumberOperand(Token operator, Object operand) {
         if (operand instanceof Double) return;
+        Main.EXIT_CODE = 70;
         throw new RuntimeError(operator, "Operand must be a number.");
     }
 
