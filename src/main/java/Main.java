@@ -28,7 +28,19 @@ public class Main {
 
         Parser pa = new Parser(tokens);
         Interpreter interpreter = new Interpreter();
-        System.out.println(interpreter.evaluate(pa.expression()));
+        System.out.println(stringify(interpreter.evaluate(pa.expression())));
+    }
+
+    private static String stringify(Object evaluate) {
+        if (evaluate == null) return "nil";
+        if (evaluate instanceof Double) {
+            String text = evaluate.toString();
+            if (text.endsWith(".0")) {
+                return text.substring(0, text.length() - 2);
+            }
+            return text;
+        }
+        return evaluate.toString();
     }
 
     static void runLine(String source) {

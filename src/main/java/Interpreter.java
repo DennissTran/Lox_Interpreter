@@ -97,7 +97,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     public Object evaluate(Expr expr) {
         try {
-            return stringify(expr.accept(this));
+            return expr.accept(this);
         } catch (RuntimeError error) {
             runtimeError(error);
         } 
