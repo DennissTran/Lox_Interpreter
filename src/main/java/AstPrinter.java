@@ -1,4 +1,14 @@
 public class AstPrinter implements Expr.Visitor<String> {
+    @Override
+    public String visitAssignExpr(Expr.Assign expr) {
+        return "NOTHING";
+    }
+
+    @Override
+    public String visitVariableExpr(Expr.Variable expr) {
+        return "This is a variable expression: " + expr.name.lexeme;
+    }
+
     String print(Expr expr) {
         return expr.accept(this);
     }

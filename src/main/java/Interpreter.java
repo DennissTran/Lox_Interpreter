@@ -1,6 +1,33 @@
 import java.util.List;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+    private Environment environment = new Environment();    
+
+    @Override
+    public Void visitBlockStmt(Stmt.Block stmt) {
+        executeBlock(stmt.statements, new Environment(environment));
+        return null;
+    }
+
+    private void executeBlock(List<Stmt> statements, Environment environment) {
+        Environment previous = this.environment;
+        try {
+            this.environment = environment;
+            for (Stmt statement : statements) {
+                execute(statement);
+            }
+        } finally {
+            this.environment = previous;
+        }
+    }
+
+    @Override
+    public Object visitAssignExpr(Expr.Assign expr) {
+        Object value = evaluate(expr.value);
+        environment.assign(expr.name, value);
+        return value;
+    }
+
     @Override
     public Void visitExpressionStmt(Stmt.Expression stmt) {
         evaluate(stmt.expression);
@@ -13,6 +40,23 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return null;
     }
 
+    @Override
+    public Void visitVarStmt(Stmt.Var stmt) {
+        Object value = evaluate(stmt.initializer);  
+        if (value == null) {
+            throw new RuntimeError(stmt.name, "Variable '" + stmt.name.lexeme + "' is not initialized.");
+        }
+        if (value instanceof String) {
+            value = ((String) value).toLowerCase(); // Convert to lowercase
+        }   
+        environment.define(stmt.name.lexeme, value);
+        return null;
+    }
+
+    @Override
+    public Object visitVariableExpr(Expr.Variable expr) {
+        return environment.get(expr.name);
+    }
 
     static void runtimeError(RuntimeError error) {
         System.err.println(error.getMessage() +
@@ -63,7 +107,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return evaluate(expr.expression);
     }
 
-    class RuntimeError extends RuntimeException {
+    static class RuntimeError extends RuntimeException {
         final Token token;
 
         RuntimeError(Token token, String message) {
