@@ -4,16 +4,17 @@ import java.nio.file.Path;
 import java.util.List;
 
 public class Main {
-    static void parseLine(String source) {
+    void parseLine(String source) {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
 
         Parser pa = new Parser(tokens);
         AstPrinter printer = new AstPrinter();
         System.out.println(printer.print(pa.expression()));
+        
     }
 
-    static void scanLine(String source) {
+    void scanLine(String source) {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
 
@@ -22,7 +23,7 @@ public class Main {
         }
     }
 
-    static void evaluateLine(String source) {
+    void evaluateLine(String source) {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
 
@@ -43,10 +44,9 @@ public class Main {
         return evaluate.toString();
     }
 
-    static void runLine(String source) {
+    void runLine(String source) {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
-
         Parser pa = new Parser(tokens);
         Interpreter interpreter = new Interpreter();
         interpreter.interpret(pa.parse());
@@ -70,16 +70,20 @@ public class Main {
         }
 
         // --------------------------- START OF INTERPRETER --------------------------
-
+        Main obj = new Main();
         switch (command) {
             case "tokenize":
-                scanLine(fileContents);
+                obj.scanLine(fileContents);
+                break;
             case "parse":
-                parseLine(fileContents);
+                obj.parseLine(fileContents);
+                break;
             case "evaluate":
-                evaluateLine(fileContents);
+                obj.evaluateLine(fileContents);
+                break;
             case "run":
-                runLine(fileContents);
+                obj.runLine(fileContents);
+                break;
             default:
                 break;
         }

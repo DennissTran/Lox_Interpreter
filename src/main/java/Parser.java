@@ -2,8 +2,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Parser {
-    private static List<Token> tokens;
-    private static int current = 0;
+    private List<Token> tokens;
+    private int current = 0;
 
     Parser(List<Token> tokens) {
         this.tokens = tokens;
@@ -86,13 +86,13 @@ public class Parser {
         return new Stmt.Expression(expr);
     }
 
-    static Expr expression() {
+    Expr expression() {
         return assignment();
     }
 
-    private static Expr assignment() {
+    private Expr assignment() {
         Expr expr = equality();
-    
+
         if (match(TokenType.EQUAL)) {
             Token equals = previous();
             Expr value = assignment();
@@ -104,13 +104,12 @@ public class Parser {
     
             error(equals, "Invalid assignment target."); 
         }
-    
+
         return expr;
     }
 
-    private static Expr equality() {
+    private Expr equality() {
         Expr expr = comparison();
-
         while (match(TokenType.BANG_EQUAL, TokenType.EQUAL_EQUAL)) {
             Token operator = previous();
             Expr right = comparison();
@@ -120,7 +119,7 @@ public class Parser {
         return expr;
     }
 
-    private static Expr comparison() {
+    private Expr comparison() {
         Expr expr = term();
 
         while (match(TokenType.GREATER, TokenType.GREATER_EQUAL,
@@ -133,7 +132,7 @@ public class Parser {
         return expr;
     }
 
-    private static Expr term() {
+    private Expr term() {
         Expr expr = factor();
 
         while (match(TokenType.PLUS, TokenType.MINUS)) {
@@ -145,7 +144,7 @@ public class Parser {
         return expr;
     }
 
-    private static Expr factor() {
+    private Expr factor() {
         Expr expr = unary();
 
         while (match(TokenType.STAR, TokenType.SLASH)) {
@@ -157,7 +156,7 @@ public class Parser {
         return expr;
     }
 
-    private static Expr unary() {
+    private Expr unary() {
         if (match(TokenType.BANG, TokenType.MINUS)) {
             Token operator = previous();
             Expr right = unary();
@@ -167,7 +166,7 @@ public class Parser {
         return primary();
     }
 
-    private static Expr primary() {
+    private Expr primary() {
         if (match(TokenType.FALSE))
             return new Expr.Literal(false);
         if (match(TokenType.TRUE)) {
@@ -195,7 +194,7 @@ public class Parser {
         return new Expr.Literal(null);
     }
 
-    private static boolean match(TokenType... types) {
+    private boolean match(TokenType... types) {
         for (TokenType type : types) {
             if (check(type)) {
                 advance();
@@ -205,38 +204,38 @@ public class Parser {
         return false;
     }
 
-    private static Token consume(TokenType type, String message) {
+    private Token consume(TokenType type, String message) {
         if (check(type))
             return advance();
         error(peek(), message);
         return advance();
     }
 
-    private static boolean check(TokenType type) {
+    private boolean check(TokenType type) {
         if (isAtEnd())
             return false;
         return peek().type == type;
     }
 
-    private static Token advance() {
+    private Token advance() {
         if (!isAtEnd())
             current++;
         return previous();
     }
 
-    private static boolean isAtEnd() {
+    private boolean isAtEnd() {
         return peek().type == TokenType.EOF;
     }
 
-    private static Token peek() {
+    private Token peek() {
         return tokens.get(current);
     }
 
-    private static Token previous() {
+    private Token previous() {
         return tokens.get(current - 1);
     }
 
-    private static void error(Token token, String message) {
+    private void error(Token token, String message) {
         System.err.println("[line " + token.line + "] Error at " +
                 (token.type == TokenType.EOF ? "end" : "'" + token.lexeme + "'") +
                 ": " + message);
