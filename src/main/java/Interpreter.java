@@ -61,7 +61,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     static void runtimeError(RuntimeError error) {
         System.err.println(error.getMessage() +
             "\n[line " + error.token.line + "]");
-        System.exit(70);
+        Main.EXIT_CODE = 70;
     }
 
     void interpret(List<Stmt> statements) {

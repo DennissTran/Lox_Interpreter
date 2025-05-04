@@ -4,6 +4,8 @@ import java.nio.file.Path;
 import java.util.List;
 
 public class Main {
+    public static int EXIT_CODE = 0;
+
     void parseLine(String source) {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
@@ -87,5 +89,6 @@ public class Main {
             default:
                 break;
         }
+        System.exit(EXIT_CODE);
     }
 }

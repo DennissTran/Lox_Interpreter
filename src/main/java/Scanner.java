@@ -38,7 +38,7 @@ public class Scanner {
 
     private void report(int line, String where, String message) {
         System.err.println("[line " + line + "] Error" + where + ": " + message);
-        System.exit(65);
+        Main.EXIT_CODE = 65;
     }
 
     private char peek() {
@@ -208,7 +208,7 @@ public class Scanner {
             scanToken();
         }
 
-        tokens.add(new Token(TokenType.EOF, "", null, line));
+        if (Main.EXIT_CODE == 0) tokens.add(new Token(TokenType.EOF, "", null, line));
         return tokens;
     }
 }
