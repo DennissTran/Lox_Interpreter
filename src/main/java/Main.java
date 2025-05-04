@@ -12,7 +12,15 @@ public class Main {
 
         Parser pa = new Parser(tokens);
         AstPrinter printer = new AstPrinter();
-        System.out.println(printer.print(pa.expression()));
+        try {
+            System.out.println(printer.print(pa.expression()));
+        } catch (ParseError error) {
+            System.err.println(error.getMessage());
+            EXIT_CODE = 65;
+        } catch (IndexOutOfBoundsException error) {
+            EXIT_CODE = 65;
+        } 
+        
         
     }
 
