@@ -28,7 +28,7 @@ public class Main {
 
         Parser pa = new Parser(tokens);
         Interpreter interpreter = new Interpreter();
-        interpreter.evaluate(pa.expression());
+        System.out.println(interpreter.evaluate(pa.expression()));
     }
 
     static void runLine(String source) {

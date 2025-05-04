@@ -102,6 +102,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         } catch (RuntimeError error) {
             runtimeError(error);
         } 
+        System.out.println("Error: ");
         return expr.accept(this);
     }
 
@@ -211,7 +212,6 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     private boolean isEqual(Object a, Object b) {
         if (a == null && b == null) return true;
         if (a == null) return false;
-
         return a.equals(b);
     }
 }
