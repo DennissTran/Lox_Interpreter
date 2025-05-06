@@ -67,8 +67,19 @@ public class Main {
 
         Parser pa = new Parser(tokens);
         Interpreter interpreter = new Interpreter();
+        List <Stmt> statements = pa.parse();
+        Resolver resolver = new Resolver(interpreter);
+        resolver.resolve(statements);
+
+        if (EXIT_CODE == 65) {
+            return;
+        }
+
+        if (EXIT_CODE == 70) {
+            return;
+        }
         try{
-            interpreter.interpret(pa.parse());
+            interpreter.interpret(statements);
         } catch (RuntimeError error) {
             System.err.println(error.getMessage() + "\n[line " + error.token.line + "]");
             EXIT_CODE = 70;

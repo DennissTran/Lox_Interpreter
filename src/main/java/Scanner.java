@@ -32,11 +32,11 @@ public class Scanner {
     private int current = 0;
     private int line = 1;
 
-    public void error(int line, String message) {
+    public static void error(int line, String message) {
         report(line, "", message);
     }
 
-    private void report(int line, String where, String message) {
+    private static void report(int line, String where, String message) {
         System.err.println("[line " + line + "] Error" + where + ": " + message);
         Main.EXIT_CODE = 65;
     }
