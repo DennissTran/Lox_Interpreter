@@ -20,8 +20,6 @@ public class Main {
         } catch (IndexOutOfBoundsException error) {
             EXIT_CODE = 65;
         } 
-        
-        
     }
 
     void scanLine(String source) {

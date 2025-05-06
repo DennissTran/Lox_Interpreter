@@ -1,9 +1,13 @@
-fun count(n) {
-  while (n < 100) {
-    if (n == 3) return n; // <--
-    print n;
-    n = n + 1;
+fun makeGreeter() {
+  fun greet(name) {
+    print globalGreeting + " " + name;
   }
+  return greet;
 }
 
-count(1);
+//var globalGreeting = "Hello";
+
+
+
+var sayHello = makeGreeter();
+sayHello("Bob");
