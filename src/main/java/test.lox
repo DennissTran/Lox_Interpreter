@@ -5,7 +5,7 @@ fun makeGreeter() {
   return greet;
 }
 
-//var globalGreeting = "Hello";
+var globalGreeting = "Hello";
 
 
 

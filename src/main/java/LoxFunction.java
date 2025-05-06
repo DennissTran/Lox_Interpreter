@@ -1,10 +1,10 @@
 import java.util.List;
 
 public class LoxFunction implements LoxCallable{
-    private final Stmt.Function declaration; // The function declaration.
+    private final Stmt.Function declaration; 
 
     LoxFunction(Stmt.Function declaration) {
-        this.declaration = declaration; // Initialize the function declaration.
+        this.declaration = declaration; 
     }
 
     @Override
@@ -14,16 +14,16 @@ public class LoxFunction implements LoxCallable{
             environment.define(declaration.params.get(i).lexeme, arguments.get(i)); // Define each parameter in the environment.
         }
         try {
-            interpreter.executeBlock(declaration.body, environment); // Execute the function body in the new environment.
+            interpreter.executeBlock(declaration.body, environment); 
         } catch (Return returnValue) {
-            return returnValue.value; // Return the value if a return statement is encountered.
+            return returnValue.value; 
         }
-        return null; // If no return statement is encountered, return null.
+        return null;
     }
 
     @Override
     public int arity() {
-        return declaration.params.size(); // Return the number of parameters.
+        return declaration.params.size();
     }
 
     @Override

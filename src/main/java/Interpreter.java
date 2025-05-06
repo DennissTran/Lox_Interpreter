@@ -100,6 +100,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     public void executeBlock(List<Stmt> statements, Environment environment) {
         Environment previous = this.environment;
+        System.out.println(environment.get(new Token(TokenType.VAR, "globalGreeting", 1, 1)));
         try {
             this.environment = environment;
             for (Stmt statement : statements) {
@@ -135,7 +136,6 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         if (stmt.initializer != null) {
             value = evaluate(stmt.initializer);
         }
-
         environment.define(stmt.name.lexeme, value);
         return null;
     }
