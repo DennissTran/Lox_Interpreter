@@ -328,7 +328,6 @@ public class Parser {
                 arguments.add(expression());
             } while (match(TokenType.COMMA));
         }
-
         Token paren = consume(TokenType.RIGHT_PAREN, "Expect ')' after arguments.");
 
         return new Expr.Call(callee, paren, arguments);

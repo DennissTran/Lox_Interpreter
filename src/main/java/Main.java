@@ -7,12 +7,12 @@ public class Main {
     public static int EXIT_CODE = 0;
 
     void parseLine(String source) {
-        Scanner scanner = new Scanner(source);
-        List<Token> tokens = scanner.scanTokens();
-
-        Parser pa = new Parser(tokens);
-        AstPrinter printer = new AstPrinter();
         try {
+            Scanner scanner = new Scanner(source);
+            List<Token> tokens = scanner.scanTokens();
+            
+            Parser pa = new Parser(tokens);
+            AstPrinter printer = new AstPrinter();
             System.out.println(printer.print(pa.expression()));
         } catch (ParseError error) {
             System.err.println(error.getMessage());
@@ -34,10 +34,10 @@ public class Main {
     void evaluateLine(String source) {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
-
-        Parser pa = new Parser(tokens);
-        Interpreter interpreter = new Interpreter();
+        
         try {
+            Parser pa = new Parser(tokens);
+            Interpreter interpreter = new Interpreter();
             System.out.println(stringify(interpreter.evaluate(pa.expression())));
         } catch (RuntimeError error) {
             System.err.println(error.getMessage() + "\n[line " + error.token.line + "]");
@@ -64,22 +64,23 @@ public class Main {
     void runLine(String source) {
         Scanner scanner = new Scanner(source);
         List<Token> tokens = scanner.scanTokens();
-
-        Parser pa = new Parser(tokens);
-        Interpreter interpreter = new Interpreter();
-        List <Stmt> statements = pa.parse();
-        Resolver resolver = new Resolver(interpreter);
-        resolver.resolve(statements);
-
-        if (EXIT_CODE == 65) {
-            return;
-        }
-
-        if (EXIT_CODE == 70) {
-            return;
-        }
         try{
+            Parser pa = new Parser(tokens);
+            Interpreter interpreter = new Interpreter();
+        
+            List <Stmt> statements = pa.parse();
+            Resolver resolver = new Resolver(interpreter);
+            resolver.resolve(statements);
+
+            if (EXIT_CODE == 65) {
+                return;
+            }
+    
+            if (EXIT_CODE == 70) {
+                return;
+            }
             interpreter.interpret(statements);
+
         } catch (RuntimeError error) {
             System.err.println(error.getMessage() + "\n[line " + error.token.line + "]");
             EXIT_CODE = 70;
