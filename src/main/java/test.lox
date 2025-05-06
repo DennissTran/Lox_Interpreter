@@ -1,13 +1,13 @@
-fun makeGreeter() {
-  fun greet(name) {
-    print globalGreeting + " " + name;
+fun makeCounter() {
+  var i = 0;
+  fun count() {
+    i = i + 1;
+    print i;
   }
-  return greet;
+
+  return count;
 }
 
-var globalGreeting = "Hello";
-
-
-
-var sayHello = makeGreeter();
-sayHello("Bob");
+var counter = makeCounter();
+counter(); // "1".
+counter(); // "2".
