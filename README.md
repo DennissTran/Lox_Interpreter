@@ -15,7 +15,8 @@ java Main.java run test.lox
 **Note**: As you can see, the most important thing if you want to try is that your computer must have Java environment before. Again, in case you don't know how to install it, you can search for tutorial on Youtube. I can guide you but it will take a lot of time. And, urrghh, I'm lazy ^^.
 
 That's it. I have showed you guys all about my project. If you have any other questions, feel free to ask me.
-![Dennis Tran](https://www.facebook.com/DennisTran1402)
+
+[Dennis Tran](https://www.facebook.com/DennisTran1402)
 
 
 This is a starting point for Java solutions to the
