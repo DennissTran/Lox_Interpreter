@@ -1,5 +1,6 @@
-fun Dennis() {
-    print "Dennis";
-}
+class Doughnut {}
 
-var Person = Dennis();
+class BostonCream < Doughnut {}
+
+print Doughnut();
+print BostonCream();
