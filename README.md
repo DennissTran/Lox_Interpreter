@@ -5,7 +5,7 @@ My project supports almost all of basic definitions of programming language, suc
 
 This project follows the book **Crafting Interpreters**. I suggest you read it once, and if you have time then give it a try.
 
-# Brief introduce to Lox
+# Brief introduction to Lox
 Many of you may ask: "What is Lox? Why haven't I heard about it before?". 
 
 The answer is rather elementary, Lox is a simple programming language created by **Bob Nystrom**. It was designed specifically to teach how interpreters and virtual machines work, not for using in real life.
