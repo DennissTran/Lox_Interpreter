@@ -4,7 +4,12 @@ Hello guys, this is my project - **Lox Interpreter**. For someone who don't know
 This project follows the book **Crafting Interpreters**. I suggest you read it once, and if you have time then give it a try.
 
 # Tutorial
-If you want to try my interpreter, clone this respository to your computer. After that, in folder `src/main/java` you can edit file `test.lox` or create new file if you want, let's assume this `test.lox`. In this file, write any Lox-code as you like. In case you don't know any thing about Lox, here is an example:
+If you want to try my interpreter:
+  1. Clone this respository to your computer.
+  2. In folder `src/main/java` you can edit file `test.lox` or create new file if you want, let's assume this `test.lox`.
+  3. In the chosen file, write any Lox-code as you like.
+
+In case you don't know any thing about Lox, here is an example:
 
 ![image](https://github.com/user-attachments/assets/366514ef-1353-4894-b262-063b8a71ba01)
 
