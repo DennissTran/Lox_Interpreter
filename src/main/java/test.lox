@@ -1,5 +1,5 @@
 fun Dennis() {
-    print this;
+    print "Dennis";
 }
 
-Dennis();
+var Person = Dennis();
