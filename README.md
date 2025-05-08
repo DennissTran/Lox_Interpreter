@@ -1,9 +1,22 @@
 # Introduction
-Hello guys, this is my project - **Lox Interpreter**. For someone who don't know what it is. Well, basically it interprets Lox - a programming language. 
+Hello guys, this is my project - **Lox Interpreter**. For someone who don't know what it is. Well, basically it interprets Lox - a programming language which I will introduce later.
 
 My project supports almost all of basic definitions of programming language, such as variable, expression, class, function, recursion, printing... Unfortunately, I don't have much time right now so I can't add any libraries yet.
 
 This project follows the book **Crafting Interpreters**. I suggest you read it once, and if you have time then give it a try.
+
+# Brief introduce to Lox
+Many of you may ask: "What is Lox? Why haven't I heard about it before?". 
+
+The answer is rather elementary, Lox is a simple programming language created by **Bob Nystrom**. It was designed specifically to teach how interpreters and virtual machines work, not for using in real life.
+
+Some characteristics you may find interesting:
+
+  - **Object-oriented** : Includes classes and inheritance.
+  - **C-like syntax**: Familiar to users of languages like Java, C, and JavaScript.
+  - **Minimalistic**: The language is intentionally small to make the interpreter easier to understand.
+
+For more details: [Lox Programming Language] (https://craftinginterpreters.com/the-lox-language.html)
 
 # Tutorial
 If you want to try my interpreter:
