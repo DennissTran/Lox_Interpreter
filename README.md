@@ -1,4 +1,13 @@
-[![progress-banner](https://backend.codecrafters.io/progress/interpreter/7f960829-6482-4556-8c56-2a13517b60a8)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
+# Introduction
+Hello guys, this is my project - Lox Interpreter. For someone who don't know what it is. Well, basically it interprets Lox - a programming language. My project supports almost all of basic definition of programming language, such as variable, expression, class, function, recursion, printing... Unfortunately, I don't have much time right now so I can't add any extension libraries yet.
+
+This project follows the book Crafting Interpreters. I suggest you read it once, and if you have time then give it a try.
+
+# Tutorial
+If you want to try my interpreter, you can clone this respository to your computer. After that, in folder src/main/java you edit file test.lox or create new file if you want, let's assume this test.lox. In test.lox, you can write any Lox-code you want. In case, you don't know any thing about Lox, here is an example:
+![image](https://github.com/user-attachments/assets/366514ef-1353-4894-b262-063b8a71ba01)
+
+
 
 This is a starting point for Java solutions to the
 ["Build your own Interpreter" Challenge](https://app.codecrafters.io/courses/interpreter/overview).
