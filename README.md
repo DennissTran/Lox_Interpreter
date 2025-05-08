@@ -5,6 +5,7 @@ This project follows the book **Crafting Interpreters**. I suggest you read it o
 
 # Tutorial
 If you want to try my interpreter, clone this respository to your computer. After that, in folder `src/main/java` you can edit file `test.lox` or create new file if you want, let's assume this `test.lox`. In this file, write any Lox-code as you like. In case you don't know any thing about Lox, here is an example:
+
 ![image](https://github.com/user-attachments/assets/366514ef-1353-4894-b262-063b8a71ba01)
 
 Then, in this folder, open terminal and enter this 
@@ -12,7 +13,7 @@ Then, in this folder, open terminal and enter this
 ```sh
 java Main.java run test.lox
 ```
-If you do it right, the terminal should print **Hello, this is Dennis Tran** with the example above.
+If you do it right, the terminal should print **Hello, this is DennisTran** with the example above.
 
 **Note**: As you can see, the most important thing if you want to try is that your computer must have Java environment before. Again, in case you don't know how to install it, you can search for tutorial on Youtube. I can guide you but it will take a lot of time. And, urrghh, I'm lazy ^^.
 
