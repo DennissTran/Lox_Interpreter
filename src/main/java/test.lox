@@ -1,1 +1,5 @@
-print clock(;
+fun Dennis() {
+    print this;
+}
+
+Dennis();
