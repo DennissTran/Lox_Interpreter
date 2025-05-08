@@ -16,7 +16,9 @@ Some characteristics you may find interesting:
   - **C-like syntax**: Familiar to users of languages like Java, C, and JavaScript.
   - **Minimalistic**: The language is intentionally small to make the interpreter easier to understand.
 
-For more details:   [Lox Programming Language] (https://craftinginterpreters.com/the-lox-language.html)
+For more details:   
+
+[Lox Programming Language] (https://craftinginterpreters.com/the-lox-language.html)
 
 # Tutorial
 If you want to try my interpreter:
