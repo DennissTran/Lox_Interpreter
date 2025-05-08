@@ -1,5 +1,7 @@
 # Introduction
-Hello guys, this is my project - **Lox Interpreter**. For someone who don't know what it is. Well, basically it interprets Lox - a programming language. My project supports almost all of basic definitions of programming language, such as variable, expression, class, function, recursion, printing... Unfortunately, I don't have much time right now so I can't add any libraries yet.
+Hello guys, this is my project - **Lox Interpreter**. For someone who don't know what it is. Well, basically it interprets Lox - a programming language. 
+
+My project supports almost all of basic definitions of programming language, such as variable, expression, class, function, recursion, printing... Unfortunately, I don't have much time right now so I can't add any libraries yet.
 
 This project follows the book **Crafting Interpreters**. I suggest you read it once, and if you have time then give it a try.
 
