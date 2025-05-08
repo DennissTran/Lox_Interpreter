@@ -5,9 +5,9 @@ This project follows the book **Crafting Interpreters**. I suggest you read it o
 
 # Tutorial
 If you want to try my interpreter:
-  1. Clone this respository to your computer.
-  2. In folder `src/main/java` you can edit file `test.lox` or create new file if you want, let's assume this `test.lox`.
-  3. In the chosen file, write any Lox-code as you like.
+  * Clone this respository to your computer.
+  * In folder `src/main/java` you can edit file `test.lox` or create new file if you want, let's assume this `test.lox`.
+  * In the chosen file, write any Lox-code as you like.
 
 In case you don't know any thing about Lox, here is an example:
 
