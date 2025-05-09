@@ -35,7 +35,7 @@ java Main.java run test.lox
 ```
 If you do it right, the terminal should print **Hello, this is DennisTran** with the example above.
 
-**Note**: As you can see, the most important thing if you want to try is that your computer must have Java environment before. Again, in case you don't know how to install it, you can search for tutorial on Youtube. I can guide you but it will take a lot of time. And, urrghh, I'm lazy ^^.
+**Note**: As you can see, the most important thing is that your computer must have Java environment before. Again, in case you don't know how to install it, you can search for tutorial on Youtube. I can guide you but it will take a lot of time. And, urrghh, I'm lazy ^^.
 
 That's it. I have showed you guys all about my project. If you have any other questions, feel free to ask me.
 
